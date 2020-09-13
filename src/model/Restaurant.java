@@ -16,6 +16,10 @@ public class Restaurant {
 		this.nit = nit;
 		this.nameAdmin = nameAdmin;
 	}
+	
+	public void addProduct(String id, String name, String description, double price, String nit) {
+		products.add(new Product(id, name, description, price, nit));
+	}
 
 	public String getNit() {
 		return nit;
@@ -24,6 +28,12 @@ public class Restaurant {
 	public void setNit(String nit) {
 		this.nit = nit;
 	}
+
+	public ArrayList<Product> getProducts() {
+		return products;
+	}
+
+
 
 
 	
