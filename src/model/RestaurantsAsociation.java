@@ -35,7 +35,17 @@ public class RestaurantsAsociation {
 		}
 		Restaurant restaurant=findRestaurant(nit);
 		restaurant.addProduct(id, name, description, price, nit);
-		
+	}
+	
+	public String registerClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
+		String message;
+		if(findClient(id)==null) {
+			addClient(typeId, id, name, lastName, phoneNumber, address);
+			message="The client was added successfully";
+		}else {
+			message="The client was not added. There is already a client with the id: "+id;
+		}
+		return message;
 	}
 	
 	public Restaurant findRestaurant(String nit) {
@@ -61,5 +71,53 @@ public class RestaurantsAsociation {
 			}
 		}
 		return product;
+	}
+	
+	public Client findClient(String id) {
+		Client client=null;
+		boolean found=false;
+		for(int i=0; i<clients.size() && !found; i++) {
+			if(clients.get(i).getId().equals(id)) {
+				found=true;
+				client=clients.get(i);
+			}
+		}
+		return client;
+	}
+	
+	public void addClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
+		if(clients.size()==0) {
+			clients.add(new Client(typeId, id, name, lastName, phoneNumber, address));
+		}else {
+			Client temp1;
+			Client temp2;
+			boolean inserted=false;
+			for(int i=0; i<clients.size() && !inserted; i++) {
+				if(clients.get(i).getLastName().compareToIgnoreCase(lastName)==0) {
+					if(clients.get(i).getName().compareToIgnoreCase(name)<=0) {
+						temp1=clients.get(i);
+						clients.set(i, new Client(typeId, id, name, lastName, phoneNumber, address));
+						inserted=true;
+						for(int j=i; j<clients.size()-1; j++) {
+							temp2=clients.get(j+1);
+							clients.set(j+1, temp1);
+							temp1=temp2;
+						}
+						clients.add(temp1);
+					}
+					
+				}else if(clients.get(i).getLastName().compareToIgnoreCase(lastName)<0) {
+					temp1=clients.get(i);
+					clients.set(i, new Client(typeId, id, name, lastName, phoneNumber, address));
+					inserted=true;
+					for(int j=i; j<clients.size()-1; j++) {
+						temp2=clients.get(j+1);
+						clients.set(j+1, temp1);
+						temp1=temp2;
+					}
+					clients.add(temp1);
+				}
+			}
+		}
 	}
 }

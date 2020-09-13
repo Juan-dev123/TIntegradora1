@@ -21,6 +21,7 @@ public class Menu {
 		System.out.println("What do you want to do?");
 		System.out.println("1 Register a restaurant");
 		System.out.println("2 Register a product");
+		System.out.println("3 Register a client");
 		int option=Integer.parseInt(read.nextLine());
 		switch(option) {
 		case 1:
@@ -28,6 +29,9 @@ public class Menu {
 			break;
 		case 2:
 			registerProduct();
+			break;
+		case 3:
+			registerClient();
 			break;
 		}
 	}
@@ -63,6 +67,31 @@ public class Menu {
 		}catch(DuplicateProductException dp) {
 			System.out.println(dp.getMessage());
 		}
+	}
+	
+	public void registerClient() {
+		System.out.println("Enter the type of id ");
+		int typeId;
+		do {
+			System.out.println("1 Identity card");
+			System.out.println("2 Cedula");
+			System.out.println("3 Passport");
+			System.out.println("4 Foreigner id");
+			typeId=Integer.parseInt(read.nextLine());
+		}while(typeId>4 || typeId<1);
+		System.out.print("Enter the number of the id:");
+		String id=read.nextLine();
+		System.out.print("Enter the name:");
+		String name=read.nextLine();
+		System.out.print("Enter the lastName:");
+		String lastName=read.nextLine();
+		System.out.print("Enter the phoneNumber:");
+		String phoneNumber=read.nextLine();
+		System.out.print("Enter the address:");
+		String address=read.nextLine();
+		System.out.println(consortium.registerClient(typeId, id, name, lastName, phoneNumber, address));
+		
+		
 		
 		
 	}
