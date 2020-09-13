@@ -16,6 +16,16 @@ public class Restaurant {
 		this.nit = nit;
 		this.nameAdmin = nameAdmin;
 	}
+
+	public String getNit() {
+		return nit;
+	}
+
+	public void setNit(String nit) {
+		this.nit = nit;
+	}
+
+
 	
 	
 }

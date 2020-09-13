@@ -32,7 +32,7 @@ public class Menu {
 		String nit=read.nextLine();
 		System.out.println("Enter the name of the administrator");
 		String nameAdmin=read.nextLine();
-		consortium.registerRestaurant(name, nit, nameAdmin);
+		System.out.println(consortium.registerRestaurant(name, nit, nameAdmin));
 		
 		
 	}
