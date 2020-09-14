@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.security.SecureRandom;
+import java.math.BigInteger;
 
 public class Order {
 	
@@ -22,11 +24,17 @@ public class Order {
 		Calendar cal= Calendar.getInstance();
 		date = cal.getTime();
 		//Missing
-		id = "";
+		id = generateId();
 		this.clientId = clientId;
 		this.nit = nit;
 		this.products = products;
 		state = Order.REQUESTED;
+	}
+	
+	public String generateId() {
+		SecureRandom random = new SecureRandom();
+		String id = new BigInteger(130, random).toString(32);
+		return id;
 	}
 	
 	

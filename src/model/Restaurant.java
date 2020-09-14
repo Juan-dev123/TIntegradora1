@@ -9,6 +9,8 @@ public class Restaurant {
 	String nameAdmin;
 	
 	private ArrayList<Product> products;
+	
+
 	private ArrayList<Order> orders;
 	
 	public Restaurant(String name, String nit, String nameAdmin) {
@@ -32,6 +34,11 @@ public class Restaurant {
 	public ArrayList<Product> getProducts() {
 		return products;
 	}
+	
+	public ArrayList<Order> getOrders() {
+		return orders;
+	}
+
 
 
 

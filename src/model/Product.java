@@ -24,7 +24,12 @@ public class Product {
 		this.id = id;
 	}
 	
-	
+	/**
+	@Override
+	public String toString() {
+		String message="Name: "+name+"\nDescription:";
+		return message;
+	} **/
 	
 	
 }

@@ -2,22 +2,21 @@ package model;
 
 public class Client {
 	
-	public static final int IDENTITY_CARD=1;
-	public static final int CEDULA=2;
-	public static final int PASSPORT=3;
-	public static final int FOREIGNER_ID=4;
+	enum Card{
+		IDENTITY_CARD, CEDULA, PASSPORT, FOREIGNER_ID
+	}
 	
-	int typeId;
-	String id;
-	String name;
-	String lastName;
-	String phoneNumber;
-	String address;
+	private String id;
+	private String name;
+	private String lastName;
+	private String phoneNumber;
+	private String address;
 	
 	private Order order;
+	private Card typeId;
 	
 	public Client(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
-		this.typeId = typeId;
+		this.typeId = Card.values()[typeId];
 		this.id = id;
 		this.name = name;
 		this.lastName=lastName;
@@ -47,6 +46,20 @@ public class Client {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	
+	@Override
+	public String toString() {
+		String message="Name: "+name+" "+lastName+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address;
+		return message;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 	
 	

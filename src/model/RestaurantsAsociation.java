@@ -48,6 +48,13 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	public void registerOrder(String clientId, String nit, ArrayList<String[]> products) {
+		Restaurant restaurant = findRestaurant(nit);
+		Client client = findClient(clientId);
+		Order order=new Order(clientId, nit, products);
+		restaurant.getOrders().add(order);
+		client.setOrder(order);
+	}
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;
@@ -120,4 +127,13 @@ public class RestaurantsAsociation {
 			}
 		}
 	}
+	/**
+	public String showProducts(String nit) {
+		Restaurant restaurant=findRestaurant(nit);
+		String products="";
+		for(int i=0; i<restaurant.getProducts().size();i++) {
+			products+=(i+1)+restaurant.getProducts().get(i).toString();
+		}
+		
+	} **/
 }
