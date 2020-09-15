@@ -21,7 +21,13 @@ public class Order {
 	String nit;
 	ArrayList<String[]> products;
 	Status state;
-	
+
+	/**
+	 * It creates a new object type Order
+	 * @param clientId The number of the client id
+	 * @param nit The NIT of the restaurant who received the order
+	 * @param products A list of the products ordered
+	 */
 	public Order(String clientId, String nit, ArrayList<String[]> products) {
 		Calendar cal= Calendar.getInstance();
 		date = cal.getTime();
@@ -32,6 +38,10 @@ public class Order {
 		state = Status.REQUESTED;
 	}
 	
+	/**
+	 * It creates a random id
+	 * @return The id
+	 */
 	public String generateId() {
 		SecureRandom random = new SecureRandom();
 		String id = new BigInteger(130, random).toString(32);

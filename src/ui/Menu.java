@@ -13,11 +13,17 @@ public class Menu {
 	
 	private RestaurantsAsociation consortium; 
 	
+	/**
+	 * It creates a new object type Menu
+	 */
 	public Menu() {
 		read=new Scanner(System.in);
 		consortium=new RestaurantsAsociation();
 	}
 	
+	/**
+	 * It prints on screen the menu
+	 */
 	public void showMenu() {
 		boolean stop=false;
 		do {
@@ -51,6 +57,9 @@ public class Menu {
 		
 	}
 	
+	/**
+	 * It registers a restaurant
+	 */
 	public void registerRestaurant() {
 		System.out.println("Enter the name of the restaurant");
 		String name=read.nextLine();
@@ -63,6 +72,9 @@ public class Menu {
 			
 	}
 	
+	/**
+	 * It registers a product
+	 */
 	public void registerProduct() {
 		System.out.print("Enter the id of the product: ");
 		String id=read.nextLine();
@@ -84,6 +96,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It registers a client 
+	 */
 	public void registerClient() {
 		System.out.println("Enter the type of id ");
 		int typeId;
@@ -96,17 +111,18 @@ public class Menu {
 		}while(typeId>4 || typeId<1);
 		System.out.print("Enter the number of the id:");
 		String id=read.nextLine();
-		System.out.print("Enter the name:");
+		System.out.print("Enter the full name:");
 		String name=read.nextLine();
-		System.out.print("Enter the lastName:");
-		String lastName=read.nextLine();
 		System.out.print("Enter the phoneNumber:");
 		String phoneNumber=read.nextLine();
 		System.out.print("Enter the address:");
 		String address=read.nextLine();
-		System.out.println(consortium.registerClient(typeId, id, name, lastName, phoneNumber, address));	
+		System.out.println(consortium.registerClient(typeId, id, name, phoneNumber, address));	
 	}
 	
+	/**
+	 * It registers an order
+	 */
 	public void registerOrder() {
 		ArrayList<String[]> products=new ArrayList<String[]>();
 		System.out.print("Enter the client id: ");
@@ -164,6 +180,9 @@ public class Menu {
 		}	
 	}
 	
+	/**
+	 * It updates the data of a restaurant
+	 */
 	public void updateDataRestaurant(){
 		System.out.println("Enther the NIT of the restaurant");
 		String nit=read.nextLine();
@@ -212,6 +231,10 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It prints a submenu with the options to update all the data or only one data
+	 * @return The option
+	 */
 	public int printSubMenu() {
 		int option;
 		do {

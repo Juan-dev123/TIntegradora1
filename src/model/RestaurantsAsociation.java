@@ -37,10 +37,10 @@ public class RestaurantsAsociation {
 		restaurant.addProduct(id, name, description, price, nit);
 	}
 	
-	public String registerClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
+	public String registerClient(int typeId, String id, String name, String phoneNumber, String address) {
 		String message;
 		if(findClient(id)==null) {
-			addClient(typeId, id, name, lastName, phoneNumber, address);
+			addClient(typeId, id, name, phoneNumber, address);
 			message="The client was added successfully";
 		}else {
 			message="The client was not added. There is already a client with the id: "+id;
@@ -117,6 +117,22 @@ public class RestaurantsAsociation {
 		return client;
 	}
 	
+	public void addClient(int typeId, String id, String name, String phoneNumber, String address) {
+		Client client = new Client(typeId, id, name, phoneNumber, address);
+		if(clients.isEmpty()) {
+			clients.add(client);
+		}else {
+			boolean inserted=false;
+			for(int i=0; i<clients.size() && !inserted; i++) {
+				if(clients.get(i).compareTo(client)<0) {
+					clients.add(i, client);
+				}
+			}
+		}
+		
+	}
+	
+	/**
 	public void addClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
 		if(clients.size()==0) {
 			clients.add(new Client(typeId, id, name, lastName, phoneNumber, address));
@@ -151,7 +167,7 @@ public class RestaurantsAsociation {
 				}
 			}
 		}
-	}
+	} **/
 	/**
 	public String showProducts(String nit) {
 		Restaurant restaurant=findRestaurant(nit);

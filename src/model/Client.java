@@ -1,6 +1,6 @@
 package model;
 
-public class Client {
+public class Client implements Comparable<Client>{
 	
 	enum Card{
 		IDENTITY_CARD,
@@ -11,49 +11,68 @@ public class Client {
 	
 	private String id;
 	private String name;
-	private String lastName;
 	private String phoneNumber;
 	private String address;
 	
 	private Order order;
 	private Card typeId;
 	
-	public Client(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
+	/**
+	 * It creates a new object type Client
+	 * @param typeId The type of id
+	 * @param id The number of the id
+	 * @param name The name
+	 * @param lastName The last name
+	 * @param phoneNumber The phone number
+	 * @param address The address
+	 */
+	public Client(int typeId, String id, String name, String phoneNumber, String address) {
 		this.typeId = Card.values()[typeId];
 		this.id = id;
 		this.name = name;
-		this.lastName=lastName;
 		this.phoneNumber = phoneNumber;
 		this.address = address;
 	}
-
+	
+	/**
+	 * It returns the id
+	 * @return The id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * It sets the id 
+	 * @param id The id
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * It returns the name
+	 * @return The name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * It sets the name
+	 * @param name The name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 	
 	@Override
+	/**
+	 * It returns the data of the client in one string
+	 * @return The string
+	 */
 	public String toString() {
-		String message="Name: "+name+" "+lastName+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address;
+		String message="Name: "+name+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address;
 		return message;
 	}
 
@@ -63,6 +82,11 @@ public class Client {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	@Override
+	public int compareTo(Client client) {
+		return name.compareToIgnoreCase(client.getName());
 	}
 	
 	
