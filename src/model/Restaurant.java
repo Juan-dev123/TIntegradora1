@@ -38,6 +38,29 @@ public class Restaurant {
 	public ArrayList<Order> getOrders() {
 		return orders;
 	}
+	
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNameAdmin() {
+		return nameAdmin;
+	}
+
+	public void setNameAdmin(String nameAdmin) {
+		this.nameAdmin = nameAdmin;
+	}
+
+	@Override
+	public String toString() {
+		String message="Name: "+name+"\nNIT: "+nit+"\nName of the Administrator: "+nameAdmin;
+		return message;
+	}
 
 
 

@@ -55,6 +55,31 @@ public class RestaurantsAsociation {
 		restaurant.getOrders().add(order);
 		client.setOrder(order);
 	}
+	
+	public void updateDataRestaurant(String nit, int option, String data) {
+		Restaurant restaurant=findRestaurant(nit);
+		switch(option) {
+		case 1: //Change name of the restaurant
+			restaurant.setName(data);
+			break;
+		case 2: //Change nit
+			restaurant.setNit(data);
+			break;
+		case 3: //Change name of the admin
+			restaurant.setNameAdmin(data);
+			break;
+		}
+	}
+	
+	public void updateDataRestaurant(String nit, String name, String newNit, String nameAdmin) {
+		Restaurant restaurant=findRestaurant(nit);
+		restaurant.setName(name);
+		restaurant.setNameAdmin(nameAdmin);
+		restaurant.setNit(newNit);
+	}
+	
+	
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;

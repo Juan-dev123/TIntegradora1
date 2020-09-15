@@ -8,27 +8,28 @@ import java.math.BigInteger;
 
 public class Order {
 	
-	public static final int REQUESTED=1;
-	public static final int PROCESSING=2;
-	public static final int SENT=3;
-	public static final int DELIVERED=4;
+	enum Status{
+		REQUESTED,
+		PROCESSING,
+		SENT,
+		DELIVERED
+	}
 	
 	String id;
 	Date date;;
 	String clientId;
 	String nit;
 	ArrayList<String[]> products;
-	int state;
+	Status state;
 	
 	public Order(String clientId, String nit, ArrayList<String[]> products) {
 		Calendar cal= Calendar.getInstance();
 		date = cal.getTime();
-		//Missing
 		id = generateId();
 		this.clientId = clientId;
 		this.nit = nit;
 		this.products = products;
-		state = Order.REQUESTED;
+		state = Status.REQUESTED;
 	}
 	
 	public String generateId() {

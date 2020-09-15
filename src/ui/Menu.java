@@ -26,6 +26,7 @@ public class Menu {
 			System.out.println("2 Register a product");
 			System.out.println("3 Register a client");
 			System.out.println("4 Register an order");
+			System.out.println("5 Update the data of a restaurant");
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
 			case 1:
@@ -40,6 +41,8 @@ public class Menu {
 			case 4:
 				registerOrder();
 				break;
+			case 5:
+				updateDataRestaurant();
 			case -1:
 				stop=true;
 				break;
@@ -158,9 +161,65 @@ public class Menu {
 				}
 			}while(!(idProduct.equals("-1")));
 			System.out.println("The order was registered successfully");
+		}	
+	}
+	
+	public void updateDataRestaurant(){
+		System.out.println("Enther the NIT of the restaurant");
+		String nit=read.nextLine();
+		if(consortium.findRestaurant(nit)==null) {
+			System.out.println("There is not exist a restaurant with the nit: "+nit);
+		}else {
+			int option=printSubMenu();
+			switch(option) {
+			case 1:
+				System.out.println("Which one do you want to change?");
+				System.out.println("1 Name of the restaurant");
+				System.out.println("2 NIT");
+				System.out.println("3 Name of the administrator");
+				option=Integer.parseInt(read.nextLine());
+				switch(option) {
+				case 1:
+					System.out.println("Enter the new name of the restaurant: ");
+					String name=read.nextLine();
+					consortium.updateDataRestaurant(nit, option, name);
+					break;
+				case 2:
+					System.out.println("Enter the new NIT: ");
+					String newNit=read.nextLine();
+					consortium.updateDataRestaurant(nit, option, newNit);;
+					break;
+				case 3:
+					System.out.println("Enter the name of the administrator: ");
+					String nameAdmin=read.nextLine();
+					consortium.updateDataRestaurant(nit, option, nameAdmin);
+					break;
+				}
+				break;
+			case 2:
+				System.out.println("Enter the new name of the restaurant: ");
+				String name=read.nextLine();
+				System.out.println("Enter the new NIT: ");
+				String newNit=read.nextLine();
+				System.out.println("Enter the name of the administrator: ");
+				String nameAdmin=read.nextLine();
+				consortium.updateDataRestaurant(nit, name, newNit, nameAdmin);
+				break;
+			default:
+				System.out.println("Error");
+			}
+			
 		}
-		
-		
+	}
+	
+	public int printSubMenu() {
+		int option;
+		do {
+			System.out.println("1 Change only one data");
+			System.out.println("2 Change all the data");
+			option=Integer.parseInt(read.nextLine());
+		}while(option>2 || option<1);
+		return option;
 		
 	}
 }

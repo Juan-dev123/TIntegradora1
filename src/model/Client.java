@@ -3,7 +3,10 @@ package model;
 public class Client {
 	
 	enum Card{
-		IDENTITY_CARD, CEDULA, PASSPORT, FOREIGNER_ID
+		IDENTITY_CARD,
+		CEDULA,
+		PASSPORT,
+		FOREIGNER_ID
 	}
 	
 	private String id;
