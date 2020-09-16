@@ -33,6 +33,8 @@ public class Menu {
 			System.out.println("3 Register a client");
 			System.out.println("4 Register an order");
 			System.out.println("5 Update the data of a restaurant");
+			System.out.println("6 Update the data of a product");
+			System.out.println("7");
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
 			case 1:
@@ -157,21 +159,21 @@ public class Menu {
 				System.out.println("When you want to stop enter -1");
 				System.out.println("Enter the id of the product");
 				idProduct=read.nextLine();
-				if(consortium.findProduct(idProduct, nit)==null) {
+				if(consortium.findProduct(idProduct)==null) {
 					System.out.println("The product with the id "+idProduct+" does not exist");
 				}else {
 					System.out.print("Enter que quantity: ");
 					int quantity=Integer.parseInt(read.nextLine());
 					boolean found=false;
 					for(int i=0; i<products.size(); i++) {
-						if(products.get(i)[0].equals(consortium.findProduct(idProduct, nit).getId())) {
+						if(products.get(i)[0].equals(consortium.findProduct(idProduct).getId())) {
 							quantity+=Integer.parseInt(products.get(i)[1]);
 							products.get(i)[1]=String.valueOf(quantity);
 							found=true;
 						}
 					}
 					if(!found) {
-						String[] order = {consortium.findProduct(idProduct, nit).getId(), String.valueOf(quantity)};
+						String[] order = {consortium.findProduct(idProduct).getId(), String.valueOf(quantity)};
 						products.add(order);
 					}
 				}
@@ -187,7 +189,7 @@ public class Menu {
 		System.out.println("Enther the NIT of the restaurant");
 		String nit=read.nextLine();
 		if(consortium.findRestaurant(nit)==null) {
-			System.out.println("There is not exist a restaurant with the nit: "+nit);
+			System.out.println("There is not exists a restaurant with the nit: "+nit);
 		}else {
 			int option=printSubMenu();
 			switch(option) {
@@ -209,7 +211,7 @@ public class Menu {
 					consortium.updateDataRestaurant(nit, option, newNit);;
 					break;
 				case 3:
-					System.out.println("Enter the name of the administrator: ");
+					System.out.println("Enter the new name of the administrator: ");
 					String nameAdmin=read.nextLine();
 					consortium.updateDataRestaurant(nit, option, nameAdmin);
 					break;
@@ -228,6 +230,56 @@ public class Menu {
 				System.out.println("Error");
 			}
 			
+		}
+	}
+	
+	public void updateProduct() {
+		System.out.println("Enter the id of the product:");
+		String id=read.nextLine();
+		if(consortium.findProduct(id)==null) {
+			System.out.println("There is not a product with the id: ");
+		}else {
+			int option=printSubMenu();
+			switch(option) {
+			case 1:
+				System.out.println("Which one do you want to change?");
+				System.out.println("1 Number of the id");
+				System.out.println("2 Name");
+				System.out.println("3 Description");
+				System.out.println("4 Price");
+				System.out.println("5 NIT of the restaurant that offers this product");
+				option=Integer.parseInt(read.nextLine());
+				switch(option) {
+				case 1:
+					System.out.print("Enter the new number of the id: ");
+					String newId=read.nextLine();
+					consortium.updateDataProduct(id, option, newId);
+					break;
+				case 2:
+					System.out.print("Enter the new name: ");
+					String name=read.nextLine();
+					consortium.updateDataProduct(id, option, name);
+					break;
+				case 3:
+					System.out.print("Enter the new description: ");
+					String description=read.nextLine();
+					consortium.updateDataProduct(id, option, description);
+					break;
+				case 4:
+					System.out.print("Enter the new price: ");
+					String price=read.nextLine();
+					consortium.updateDataProduct(id, option, price);
+					break;
+				case 5:
+					System.out.print("Enter the new NIT: ");
+					String nit=read.nextLine();
+					consortium.updateDataProduct(id, option, nit);
+					break;
+				}
+				break;
+			case 2:
+				break;
+			}
 		}
 	}
 	

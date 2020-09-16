@@ -9,10 +9,12 @@ public class RestaurantsAsociation {
 
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<Client> clients;
+	private ArrayList<Product> products;
 	
 	public RestaurantsAsociation() {
 		restaurants = new ArrayList<Restaurant>();
 		clients = new ArrayList<Client>();
+		products = new ArrayList<Product>(); 
 	}
 	
 	public String registerRestaurant(String name, String nit, String nameAdmin){
@@ -30,11 +32,11 @@ public class RestaurantsAsociation {
 		if(findRestaurant(nit)==null) {
 			throw new NotFoundRestaurantException(nit);
 		}
-		if(findProduct(id, nit)!=null) {
+		if(findProduct(id)!=null) {
 			throw new DuplicateProductException(id);
 		}
-		Restaurant restaurant=findRestaurant(nit);
-		restaurant.addProduct(id, name, description, price, nit);
+		Product product=new Product(id, name, description, price, nit);
+		products.add(product);
 	}
 	
 	public String registerClient(int typeId, String id, String name, String phoneNumber, String address) {
@@ -78,7 +80,27 @@ public class RestaurantsAsociation {
 		restaurant.setNit(newNit);
 	}
 	
-	
+	public void updateDataProduct(String id, int option, String data) {
+		Product product=findProduct(id);
+		switch(option) {
+		case 1:
+			product.setId(data);
+			break;
+		case 2:
+			product.setName(data);
+			break;
+		case 3:
+			product.setDescription(data);
+			break;
+		case 4:
+			
+			product.setPrice(Double.parseDouble(data));
+			break;
+		case 5:
+			product.setNit(data);
+			break;
+		}
+	}
 	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
@@ -92,14 +114,13 @@ public class RestaurantsAsociation {
 		return restaurant;
 	}
 	
-	public Product findProduct(String id, String nit) {
-		Restaurant restaurant=findRestaurant(nit);
+	public Product findProduct(String id) {
 		Product product=null;
 		boolean found=false;
-		for(int i=0; i<restaurant.getProducts().size() && !found; i++) {
-			if(restaurant.getProducts().get(i).getId().equalsIgnoreCase(id)) {
+		for(int i=0; i<products.size() && !found; i++) {
+			if(products.get(i).getId().equalsIgnoreCase(id)) {
 				found=true;
-				product=restaurant.getProducts().get(i);
+				product=products.get(i);
 			}
 		}
 		return product;
@@ -131,6 +152,24 @@ public class RestaurantsAsociation {
 		}
 		
 	}
+	
+	public ArrayList<Restaurant> getRestaurants() {
+		return restaurants;
+	}
+
+	public void setRestaurants(ArrayList<Restaurant> restaurants) {
+		this.restaurants = restaurants;
+	}
+
+	public ArrayList<Client> getClients() {
+		return clients;
+	}
+
+	public void setClients(ArrayList<Client> clients) {
+		this.clients = clients;
+	}
+
+
 	
 	/**
 	public void addClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {

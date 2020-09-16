@@ -6,11 +6,18 @@ import org.junit.jupiter.api.Test;
 
 class RestaurantsAsociationTest {
 	
-	
+	public void setupScenary1(){
+		
+	}
 
 	@Test
-	void test() {
-		fail("Not yet implemented");
+	void testRestaurantsAsociation() {
+		setupScenary1();
+		RestaurantsAsociation consortium=new RestaurantsAsociation();
+		assertNotNull(consortium);
+		assertTrue(consortium.getClients().isEmpty());
+		assertTrue(consortium.getRestaurants().isEmpty());
+		
 	}
 
 }
