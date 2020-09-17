@@ -1,3 +1,4 @@
+
 package ui;
 
 import java.util.ArrayList;
@@ -278,6 +279,17 @@ public class Menu {
 				}
 				break;
 			case 2:
+				System.out.print("Enter the number of the id: ");
+				String newId=read.nextLine();
+				System.out.print("Enter the name: ");
+				String name=read.nextLine();
+				System.out.print("Enter the description: ");
+				String description=read.nextLine();
+				System.out.print("Enter the price: ");
+				double price=Double.parseDouble(read.nextLine());
+				System.out.print("Enter the NIT of the restaurant that offers this product: ");
+				String nit=read.nextLine();
+				consortium.updateDataProduct(id, newId, name, description, price, nit);
 				break;
 			}
 		}

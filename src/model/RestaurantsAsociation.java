@@ -102,6 +102,15 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	public void updateDataProduct(String id, String newId, String name, String description, double price, String nit) {
+		Product product=findProduct(nit);
+		product.setId(newId);
+		product.setName(name);
+		product.setDescription(description);
+		product.setPrice(price);
+		product.setNit(nit);
+	}
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;
