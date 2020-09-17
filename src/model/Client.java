@@ -88,6 +88,32 @@ public class Client implements Comparable<Client>{
 	public int compareTo(Client client) {
 		return name.compareToIgnoreCase(client.getName());
 	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Card getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(int typeId) {
+		this.typeId = Card.values()[typeId];
+	}
+	
+	
 	
 	
 	

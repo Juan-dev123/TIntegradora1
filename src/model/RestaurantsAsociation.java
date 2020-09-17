@@ -111,6 +111,36 @@ public class RestaurantsAsociation {
 		product.setNit(nit);
 	}
 	
+	public void updateDataClient(String id, int option, String data) {
+		Client client=findClient(id);
+		switch(option) {
+		case 1:
+			client.setTypeId(Integer.parseInt(data));
+			break;
+		case 2:
+			client.setId(data);
+			break;
+		case 3:
+			client.setName(data);
+			break;
+		case 4:
+			client.setPhoneNumber(data);
+			break;
+		case 5:
+			client.setAddress(data);
+			break;
+		}
+	}
+	
+	public void updateDataClient(String id, int typeId, String newId, String name, String phoneNumber, String address) {
+		Client client = findClient(id);
+		client.setTypeId(typeId);
+		client.setId(newId);
+		client.setName(name);
+		client.setPhoneNumber(phoneNumber);
+		client.setAddress(address);
+	}
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;

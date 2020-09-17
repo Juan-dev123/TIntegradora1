@@ -235,7 +235,7 @@ public class Menu {
 	}
 	
 	public void updateProduct() {
-		System.out.println("Enter the id of the product:");
+		System.out.print("Enter the id of the product:");
 		String id=read.nextLine();
 		if(consortium.findProduct(id)==null) {
 			System.out.println("There is not a product with the id: ");
@@ -290,6 +290,82 @@ public class Menu {
 				System.out.print("Enter the NIT of the restaurant that offers this product: ");
 				String nit=read.nextLine();
 				consortium.updateDataProduct(id, newId, name, description, price, nit);
+				break;
+			}
+		}
+	}
+	
+	public void updateClient() {
+		System.out.print("Enter the id of the client: ");
+		String id=read.nextLine();
+		if(consortium.findClient(id)==null) {
+			System.out.println("There is no client with the id: "+id);
+		}else {
+			int option=printSubMenu();
+			switch(option) {
+			case 1:
+				System.out.println("Which one do you want to change?");
+				System.out.println("1 Type of id");
+				System.out.println("1 Number of the id");
+				System.out.println("2 The full name");
+				System.out.println("3 The phone number");
+				System.out.println("4 The address");
+				option=Integer.parseInt(read.nextLine());
+				
+				switch(option) {
+				case 1:
+					int typeId;
+					do {
+						System.out.println("Select the type of id");
+						System.out.println("1 Identity card");
+						System.out.println("2 Cedula");
+						System.out.println("3 Passport");
+						System.out.println("4 Foreigner id");
+						typeId=Integer.parseInt(read.nextLine());
+					}while(typeId>4 || typeId<1);
+					consortium.updateDataClient(id, option, String.valueOf(typeId));
+					break;
+				case 2:
+					System.out.print("Enter the new id: ");
+					String newId=read.nextLine();
+					consortium.updateDataClient(id, option, newId);
+					break;
+				case 3:
+					System.out.print("Enter the new name: ");
+					String name=read.nextLine();
+					consortium.updateDataClient(id, option, name);
+					break;
+				case 4:
+					System.out.print("Enter the new phone number: ");
+					String phoneNumber=read.nextLine();
+					consortium.updateDataClient(id, option, phoneNumber);
+					break;
+				case 5:
+					System.out.print("Enter the new address: ");
+					String address=read.nextLine();
+					consortium.updateDataProduct(id, option, address);
+					break;
+				}
+				break;
+			case 2:
+				int typeId;
+				do {
+					System.out.println("Enter the new type of id");
+					System.out.println("1 Identity card");
+					System.out.println("2 Cedula");
+					System.out.println("3 Passport");
+					System.out.println("4 Foreigner id");
+					typeId=Integer.parseInt(read.nextLine());
+				}while(typeId>4 || typeId<1);
+				System.out.print("Enter the new number of the id: ");
+				String newId= read.nextLine();
+				System.out.print("Enter the new full name: ");
+				String name = read.nextLine();
+				System.out.print("Enter the new phone number");
+				String phoneNumber = read.nextLine();
+				System.out.print("Enter the new address");
+				String address = read.nextLine();
+				consortium.updateDataClient(id, typeId, newId, name, phoneNumber, address);
 				break;
 			}
 		}
