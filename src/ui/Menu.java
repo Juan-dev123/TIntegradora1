@@ -86,7 +86,7 @@ public class Menu {
 		String nameAdmin=read.nextLine();
 		System.out.println(consortium.registerRestaurant(name, nit, nameAdmin));
 		try {
-			consortium.saveData();
+			consortium.saveData("restaurant");
 		}catch(FileNotFoundException fnf) {
 			System.out.println(fnf.getMessage());
 		}catch(IOException io) {
@@ -112,14 +112,12 @@ public class Menu {
 		String nit=read.nextLine();
 		try {
 			consortium.registerProduct(id, name, description, price, nit);
+			consortium.saveData("product");
 			System.out.println("The product was registered successfully");
 		}catch(NotFoundRestaurantException nfr) {
 			System.out.println(nfr.getMessage());
 		}catch(DuplicateProductException dp) {
 			System.out.println(dp.getMessage());
-		}
-		try {
-			consortium.saveData();
 		}catch(FileNotFoundException fnf) {
 			System.out.println(fnf.getMessage());
 		}catch(IOException io) {
@@ -150,7 +148,7 @@ public class Menu {
 		String address=read.nextLine();
 		System.out.println(consortium.registerClient(typeId, id, name, phoneNumber, address));	
 		try {
-			consortium.saveData();
+			consortium.saveData("client");
 		}catch(FileNotFoundException fnf) {
 			System.out.println(fnf.getMessage());
 		}catch(IOException io) {
@@ -192,6 +190,13 @@ public class Menu {
 			}while(consortium.findRestaurant(nit)!=null);
 			addProducts(products);
 			System.out.println(consortium.registerOrder(clientId, nit, products));
+			try {
+				consortium.saveData("order");
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
 		}	
 	}
 	
@@ -225,6 +230,13 @@ public class Menu {
 				String nameAdmin=read.nextLine();
 				consortium.updateDataRestaurant(nit, option, nameAdmin);
 				break;
+			}
+			try {
+				consortium.saveData("restaurant");
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
 			}
 		}
 	}
@@ -268,6 +280,13 @@ public class Menu {
 				String nit=read.nextLine();
 				consortium.updateDataProduct(id, option, nit);
 				break;
+			}
+			try {
+				consortium.saveData("product");
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
 			}
 		}
 	}
@@ -338,6 +357,13 @@ public class Menu {
 					break;
 				}
 			}
+			try {
+				consortium.saveData("client");
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
 		}
 	}
 	
@@ -368,6 +394,13 @@ public class Menu {
 			case 3:
 				updateProductsList(id);
 				break;
+			}
+			try {
+				consortium.saveData("order");
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
 			}
 		}
 	}

@@ -1,18 +1,20 @@
 package model;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import exceptions.DuplicateProductException;
 import exceptions.NotFoundRestaurantException;
 
 public class RestaurantsAsociation {
-
-	public static final String SAVE_PATH_FILE = "data/restaurantsAsociation.mor";
+	
+	public static final String SAVE_PATH_FILE = "data/";
 	
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<Client> clients;
@@ -241,13 +243,51 @@ public class RestaurantsAsociation {
 		return allProductsBelong;
 	}
 	
-	public void saveData() throws FileNotFoundException, IOException{
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE));
-		oos.writeObject(restaurants);
-		oos.writeObject(clients);
-		oos.writeObject(products);
-		oos.writeObject(orders);
+	public void saveData(String typeObject) throws FileNotFoundException, IOException{
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE+typeObject+".mor"));
+		switch(typeObject) {
+		case "restaurant":
+			oos.writeObject(restaurants);
+			break;
+		case "client":
+			oos.writeObject(clients);
+			break;
+		case "product":
+			oos.writeObject(products);
+			break;
+		case "order":
+			oos.writeObject(orders);
+			break;
+		}
 		oos.close();
+	}
+	
+	public void loadData() throws IOException, ClassNotFoundException{
+		File fileRestaurant = new File(SAVE_PATH_FILE+"restaurant.mor");
+		if(fileRestaurant.exists()) {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileRestaurant));
+			restaurants=(ArrayList<Restaurant>)ois.readObject();
+			ois.close();
+		}
+		File fileClient = new File(SAVE_PATH_FILE+"client.mor");
+		if(fileClient.exists()) {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileClient));
+			clients=(ArrayList<Client>)ois.readObject();
+			ois.close();
+		}
+		File fileProduct = new File(SAVE_PATH_FILE+"product.mor");
+		if(fileProduct.exists()) {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileProduct));
+			products=(ArrayList<Product>)ois.readObject();
+			ois.close();
+		}
+		File fileOrder = new File(SAVE_PATH_FILE+"order.mor");
+		if(fileOrder.exists()) {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileOrder));
+			orders=(ArrayList<Order>)ois.readObject();
+			ois.close();
+		}
+		
 	}
 	
 	public ArrayList<Restaurant> getRestaurants() {
