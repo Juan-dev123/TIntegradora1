@@ -81,13 +81,6 @@ public class RestaurantsAsociation {
 		}
 	}
 	
-	public void updateDataRestaurant(String nit, String name, String newNit, String nameAdmin) {
-		Restaurant restaurant=findRestaurant(nit);
-		restaurant.setName(name);
-		restaurant.setNameAdmin(nameAdmin);
-		restaurant.setNit(newNit);
-	}
-	
 	public void updateDataProduct(String id, int option, String data) {
 		Product product=findProduct(id);
 		switch(option) {
@@ -110,15 +103,6 @@ public class RestaurantsAsociation {
 		}
 	}
 	
-	public void updateDataProduct(String id, String newId, String name, String description, double price, String nit) {
-		Product product=findProduct(nit);
-		product.setId(newId);
-		product.setName(name);
-		product.setDescription(description);
-		product.setPrice(price);
-		product.setNit(nit);
-	}
-	
 	public void updateDataClient(String id, int option, String data) {
 		Client client=findClient(id);
 		switch(option) {
@@ -138,15 +122,6 @@ public class RestaurantsAsociation {
 			client.setAddress(data);
 			break;
 		}
-	}
-	
-	public void updateDataClient(String id, int typeId, String newId, String name, String phoneNumber, String address) {
-		Client client = findClient(id);
-		client.setTypeId(typeId);
-		client.setId(newId);
-		client.setName(name);
-		client.setPhoneNumber(phoneNumber);
-		client.setAddress(address);
 	}
 	
 	public void updateDataOrder(String id, int option, String data) {
@@ -172,14 +147,6 @@ public class RestaurantsAsociation {
 	public void updateQuantityProduct(String id, int position, String quantity) {
 		Order order=findOrder(id);
 		order.setQuantityProduct(position, quantity);
-	}
-	
-	public void updateDataOrder(String id, String clientId, String nit, ArrayList<String[]> products, String state) {
-		Order order=findOrder(id);
-		order.setClientId(clientId);
-		order.setNit(nit);
-		order.setProducts(products);
-		order.setState(state);
 	}
 	
 	public Restaurant findRestaurant(String nit) {

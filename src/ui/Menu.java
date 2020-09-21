@@ -181,9 +181,8 @@ public class Menu {
 		if(consortium.findRestaurant(nit)==null) {
 			System.out.println("There is not exists a restaurant with the nit: "+nit);
 		}else {
-			int option=printSubMenu();
-			switch(option) {
-			case 1:
+			int option;
+			
 				System.out.println("Which one do you want to change?");
 				System.out.println("1 Name of the restaurant");
 				System.out.println("2 NIT");
@@ -206,19 +205,8 @@ public class Menu {
 					consortium.updateDataRestaurant(nit, option, nameAdmin);
 					break;
 				}
-				break;
-			case 2:
-				System.out.println("Enter the new name of the restaurant: ");
-				String name=read.nextLine();
-				System.out.println("Enter the new NIT: ");
-				String newNit=read.nextLine();
-				System.out.println("Enter the name of the administrator: ");
-				String nameAdmin=read.nextLine();
-				consortium.updateDataRestaurant(nit, name, newNit, nameAdmin);
-				break;
-			default:
-				System.out.println("Error");
-			}
+				
+			
 			
 		}
 	}
@@ -229,9 +217,8 @@ public class Menu {
 		if(consortium.findProduct(id)==null) {
 			System.out.println("There is not a product with the id: ");
 		}else {
-			int option=printSubMenu();
-			switch(option) {
-			case 1:
+			int option;
+
 				System.out.println("Which one do you want to change?");
 				System.out.println("1 Number of the id");
 				System.out.println("2 Name");
@@ -266,21 +253,8 @@ public class Menu {
 					consortium.updateDataProduct(id, option, nit);
 					break;
 				}
-				break;
-			case 2:
-				System.out.print("Enter the number of the id: ");
-				String newId=read.nextLine();
-				System.out.print("Enter the name: ");
-				String name=read.nextLine();
-				System.out.print("Enter the description: ");
-				String description=read.nextLine();
-				System.out.print("Enter the price: ");
-				double price=Double.parseDouble(read.nextLine());
-				System.out.print("Enter the NIT of the restaurant that offers this product: ");
-				String nit=read.nextLine();
-				consortium.updateDataProduct(id, newId, name, description, price, nit);
-				break;
-			}
+				
+			
 		}
 	}
 	
@@ -290,9 +264,8 @@ public class Menu {
 		if(consortium.findClient(id)==null) {
 			System.out.println("There is no client with the id: "+id);
 		}else {
-			int option=printSubMenu();
-			switch(option) {
-			case 1:
+			int option;
+			
 				System.out.println("Which one do you want to change?");
 				System.out.println("1 Type of id");
 				System.out.println("2 Number of the id");
@@ -335,28 +308,7 @@ public class Menu {
 					consortium.updateDataProduct(id, option, address);
 					break;
 				}
-				break;
-			case 2:
-				int typeId;
-				do {
-					System.out.println("Enter the new type of id");
-					System.out.println("1 Identity card");
-					System.out.println("2 Cedula");
-					System.out.println("3 Passport");
-					System.out.println("4 Foreigner id");
-					typeId=Integer.parseInt(read.nextLine());
-				}while(typeId>4 || typeId<1);
-				System.out.print("Enter the new number of the id: ");
-				String newId= read.nextLine();
-				System.out.print("Enter the new full name: ");
-				String name = read.nextLine();
-				System.out.print("Enter the new phone number");
-				String phoneNumber = read.nextLine();
-				System.out.print("Enter the new address");
-				String address = read.nextLine();
-				consortium.updateDataClient(id, typeId, newId, name, phoneNumber, address);
-				break;
-			}
+
 		}
 	}
 	
@@ -366,9 +318,9 @@ public class Menu {
 		if(consortium.findOrder(id)==null) {
 			System.out.println("There is no order with the id: "+id);
 		}else {
-			int option=printSubMenu();
-			switch(option) {
-			case 1:
+			int option;
+			
+
 				System.out.println("Which one do you want to change?");
 				System.out.println("1 The number of the id of the client");
 				System.out.println("2 The NIT of the restaurant");
@@ -391,34 +343,9 @@ public class Menu {
 					updateProductsList(id);
 					break;
 				}
-				break;
-			case 2:
-				/**
-				System.out.println("4 The status of the order");**/
-				
-				System.out.print("Enter the new number of the id of the client: ");
-				String idClient= read.nextLine();
-				System.out.print("Enter the new NIT: ");
-				String nit = read.nextLine();
-				updateProductsList(id);
-				
-				break;
-			}
+			
+			
 		}
-	}
-	
-	/**
-	 * It prints a submenu with the options to update all the data or only one data
-	 * @return The option
-	 */
-	public int printSubMenu() {
-		int option;
-		do {
-			System.out.println("1 Change only one data");
-			System.out.println("2 Change all the data");
-			option=Integer.parseInt(read.nextLine());
-		}while(option>2 || option<1);
-		return option;
 	}
 	
 	public String changeOrderStatus(String orderId) {
