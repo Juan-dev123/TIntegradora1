@@ -35,7 +35,9 @@ public class Menu {
 			System.out.println("4 Register an order");
 			System.out.println("5 Update the data of a restaurant");
 			System.out.println("6 Update the data of a product");
-			System.out.println("7");
+			System.out.println("7 Update the data of a client");
+			System.out.println("8 Update the data of an order");
+			
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
 			case 1:
@@ -52,6 +54,16 @@ public class Menu {
 				break;
 			case 5:
 				updateDataRestaurant();
+				break;
+			case 6:
+				updateProduct();
+				break;
+			case 7:
+				updateClient();
+				break;
+			case 8:
+				updateOrder();
+				break;
 			case -1:
 				stop=true;
 				break;
@@ -155,31 +167,8 @@ public class Menu {
 				System.out.print("Enter the NIT of the restaurant: ");
 				nit=read.nextLine();
 			}while(consortium.findRestaurant(nit)!=null);
-			String idProduct;
-			do {
-				System.out.println("When you want to stop enter -1");
-				System.out.println("Enter the id of the product");
-				idProduct=read.nextLine();
-				if(consortium.findProduct(idProduct)==null) {
-					System.out.println("The product with the id "+idProduct+" does not exist");
-				}else {
-					System.out.print("Enter que quantity: ");
-					int quantity=Integer.parseInt(read.nextLine());
-					boolean found=false;
-					for(int i=0; i<products.size(); i++) {
-						if(products.get(i)[0].equals(consortium.findProduct(idProduct).getId())) {
-							quantity+=Integer.parseInt(products.get(i)[1]);
-							products.get(i)[1]=String.valueOf(quantity);
-							found=true;
-						}
-					}
-					if(!found) {
-						String[] order = {consortium.findProduct(idProduct).getId(), String.valueOf(quantity)};
-						products.add(order);
-					}
-				}
-			}while(!(idProduct.equals("-1")));
-			System.out.println("The order was registered successfully");
+			addProducts(products);
+			System.out.println(consortium.registerOrder(clientId, nit, products));
 		}	
 	}
 	
@@ -306,10 +295,10 @@ public class Menu {
 			case 1:
 				System.out.println("Which one do you want to change?");
 				System.out.println("1 Type of id");
-				System.out.println("1 Number of the id");
-				System.out.println("2 The full name");
-				System.out.println("3 The phone number");
-				System.out.println("4 The address");
+				System.out.println("2 Number of the id");
+				System.out.println("3 The full name");
+				System.out.println("4 The phone number");
+				System.out.println("5 The address");
 				option=Integer.parseInt(read.nextLine());
 				
 				switch(option) {
@@ -371,6 +360,53 @@ public class Menu {
 		}
 	}
 	
+	public void updateOrder() {
+		System.out.print("Enter the id of the order: ");
+		String id=read.nextLine();
+		if(consortium.findOrder(id)==null) {
+			System.out.println("There is no order with the id: "+id);
+		}else {
+			int option=printSubMenu();
+			switch(option) {
+			case 1:
+				System.out.println("Which one do you want to change?");
+				System.out.println("1 The number of the id of the client");
+				System.out.println("2 The NIT of the restaurant");
+				System.out.println("3 The list of products");
+				System.out.println("4 The status of the order");
+				option=Integer.parseInt(read.nextLine());
+				
+				switch(option) {
+				case 1:
+					System.out.print("Enter the new id of the client: ");
+					String clientId=read.nextLine();
+					consortium.updateDataOrder(id, option, clientId);
+					break;
+				case 2:
+					System.out.print("Enter the new NIT: ");
+					String nit=read.nextLine();
+					consortium.updateDataOrder(id, option, nit);
+					break;
+				case 3:
+					updateProductsList(id);
+					break;
+				}
+				break;
+			case 2:
+				/**
+				System.out.println("4 The status of the order");**/
+				
+				System.out.print("Enter the new number of the id of the client: ");
+				String idClient= read.nextLine();
+				System.out.print("Enter the new NIT: ");
+				String nit = read.nextLine();
+				updateProductsList(id);
+				
+				break;
+			}
+		}
+	}
+	
 	/**
 	 * It prints a submenu with the options to update all the data or only one data
 	 * @return The option
@@ -383,6 +419,108 @@ public class Menu {
 			option=Integer.parseInt(read.nextLine());
 		}while(option>2 || option<1);
 		return option;
+	}
+	
+	public String changeOrderStatus(String orderId) {
+		String status=consortium.findOrder(orderId).getState();
+		int option;
+		System.out.println("Enter the new state");
+		switch(status) {
+		case "REQUESTED":
+			do {
+				System.out.println("1 Processing");
+				System.out.println("2 Sent");
+				System.out.println("3 Delivered");
+				option=Integer.parseInt(read.nextLine());
+			}while(option>3 || option<1);
+			option++;
+			status=consortium.findOrder(orderId).getState(option);
+			break;
+		case "PROCESSING":
+			do {
+				System.out.println("1 Sent");
+				System.out.println("2 Delivered");
+				option=Integer.parseInt(read.nextLine());
+			}while(option>2 || option<1);
+			option=option+2;
+			status=consortium.findOrder(orderId).getState(option);
+			break;
+		case "SENT":
+			do {
+				System.out.println("1 Delivered");
+				option=Integer.parseInt(read.nextLine());
+			}while(option!=1);
+			option=option+3;
+			status=consortium.findOrder(orderId).getState(option);
+			break;
+		}
 		
+		return status;
+	}
+	
+	public void addProducts(ArrayList<String[]> products) {
+		String idProduct;
+		do {
+			System.out.println("When you want to stop enter -1");
+			System.out.println("Enter the id of the product");
+			idProduct=read.nextLine();
+			if(consortium.findProduct(idProduct)==null && !idProduct.equals("-1")) {
+				System.out.println("The product with the id "+idProduct+" does not exist");
+			}else {
+				System.out.print("Enter que quantity: ");
+				int quantity=Integer.parseInt(read.nextLine());
+				boolean found=false;
+				for(int i=0; i<products.size(); i++) {
+					if(products.get(i)[0].equals(consortium.findProduct(idProduct).getId())) {
+						quantity+=Integer.parseInt(products.get(i)[1]);
+						products.get(i)[1]=String.valueOf(quantity);
+						found=true;
+					}
+				}
+				if(!found) {
+					String[] order = {consortium.findProduct(idProduct).getId(), String.valueOf(quantity)};
+					products.add(order);
+				}
+			}
+		}while(!(idProduct.equals("-1")));
+	}
+	
+	public void updateProductsList(String id) {
+		int option;
+		System.out.println("What do you want to do?");
+		System.out.println("1 Add a product");
+		System.out.println("2 Remove a product");
+		System.out.println("3 Change the quantity of a product");
+		option=Integer.parseInt(read.nextLine());
+		String product;
+		int position;
+		switch(option) {
+		case 1:
+			addProducts(consortium.findOrder(id).getProducts());
+			break;
+		case 2:
+			System.out.print("Enter the id of the product that you want to remove: ");
+			product=read.nextLine();
+			position=consortium.findOrder(id).getPositionProducts(product);
+			if(position==-1) {
+				System.out.println("There is no product with the id: "+product);
+			}else {
+				consortium.findOrder(id).getProducts().remove(position);
+				System.out.println("The product was removed successfully");
+			}
+			break;
+		case 3:
+			System.out.print("Enter the id of the product: ");
+			product=read.nextLine();
+			position=consortium.findOrder(id).getPositionProducts(product);
+			if(position==-1) {
+				System.out.println("There is no product with the id: "+product);
+			}else {
+				System.out.print("Enter the new quantity: ");
+				String quantity=read.nextLine();
+				consortium.updateQuantityProduct(id, position, quantity);
+			}
+			break;
+		}
 	}
 }

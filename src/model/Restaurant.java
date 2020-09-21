@@ -1,14 +1,10 @@
 package model;
 
-import java.util.ArrayList;
-
 public class Restaurant {
 	
 	String name;
 	String nit;
 	String nameAdmin;
-
-	private ArrayList<Order> orders;
 	
 	public Restaurant(String name, String nit, String nameAdmin) {
 		this.name = name;
@@ -22,10 +18,6 @@ public class Restaurant {
 
 	public void setNit(String nit) {
 		this.nit = nit;
-	}
-	
-	public ArrayList<Order> getOrders() {
-		return orders;
 	}
 	
 	public String getName() {

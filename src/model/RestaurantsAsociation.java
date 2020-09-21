@@ -10,11 +10,13 @@ public class RestaurantsAsociation {
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<Client> clients;
 	private ArrayList<Product> products;
+	private ArrayList<Order> orders;
 	
 	public RestaurantsAsociation() {
 		restaurants = new ArrayList<Restaurant>();
 		clients = new ArrayList<Client>();
-		products = new ArrayList<Product>(); 
+		products = new ArrayList<Product>();
+		orders=new ArrayList<Order>(); 
 	}
 	
 	public String registerRestaurant(String name, String nit, String nameAdmin){
@@ -50,12 +52,18 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
-	public void registerOrder(String clientId, String nit, ArrayList<String[]> products) {
-		Restaurant restaurant = findRestaurant(nit);
-		Client client = findClient(clientId);
-		Order order=new Order(clientId, nit, products);
-		restaurant.getOrders().add(order);
-		client.setOrder(order);
+	public String registerOrder(String clientId, String nit, ArrayList<String[]> products) {
+		String message;
+		if(checkProducts(nit, products)) {
+			message="All the products do not belong to the same restaurant. So, the order was not registered";
+		}else {
+			Client client = findClient(clientId);
+			Order order=new Order(clientId, nit, products);
+			orders.add(order);
+			client.setOrder(order);
+			message="The order was registered successfully";
+		}
+		return message;
 	}
 	
 	public void updateDataRestaurant(String nit, int option, String data) {
@@ -141,6 +149,39 @@ public class RestaurantsAsociation {
 		client.setAddress(address);
 	}
 	
+	public void updateDataOrder(String id, int option, String data) {
+		Order order=findOrder(id);
+		switch(option) {
+		case 1:
+			order.setClientId(data);
+			break;
+		case 2:
+			order.setNit(data);
+			break;
+		case 4:
+			order.setState(data);
+			break;
+		}
+	}
+	
+	public void updateDataOrder(String id, ArrayList<String[]> products) {
+		Order order=findOrder(id);
+		order.setProducts(products);
+	}
+	
+	public void updateQuantityProduct(String id, int position, String quantity) {
+		Order order=findOrder(id);
+		order.setQuantityProduct(position, quantity);
+	}
+	
+	public void updateDataOrder(String id, String clientId, String nit, ArrayList<String[]> products, String state) {
+		Order order=findOrder(id);
+		order.setClientId(clientId);
+		order.setNit(nit);
+		order.setProducts(products);
+		order.setState(state);
+	}
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;
@@ -177,6 +218,18 @@ public class RestaurantsAsociation {
 		return client;
 	}
 	
+	public Order findOrder(String id) {
+		Order order=null;
+		boolean found=false;
+		for(int i=0; i<orders.size() && !found; i++) {
+			if(orders.get(i).getId().equals(id)) {
+				found=true;
+				order=orders.get(i);
+			}
+		}
+		return order;
+	}
+	
 	public void addClient(int typeId, String id, String name, String phoneNumber, String address) {
 		Client client = new Client(typeId, id, name, phoneNumber, address);
 		if(clients.isEmpty()) {
@@ -190,6 +243,16 @@ public class RestaurantsAsociation {
 			}
 		}
 		
+	}
+	
+	public boolean checkProducts(String nit, ArrayList<String[]> products) {
+		boolean allProductsBelong=true;;
+		for(String[] product : products) {
+			if(!(product[0].equals(nit))) {
+				allProductsBelong=false;
+			}
+		}
+		return allProductsBelong;
 	}
 	
 	public ArrayList<Restaurant> getRestaurants() {
