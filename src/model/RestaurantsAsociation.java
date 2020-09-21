@@ -1,5 +1,10 @@
 package model;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import exceptions.DuplicateProductException;
@@ -7,6 +12,8 @@ import exceptions.NotFoundRestaurantException;
 
 public class RestaurantsAsociation {
 
+	public static final String SAVE_PATH_FILE = "data/restaurantsAsociation.mor";
+	
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<Client> clients;
 	private ArrayList<Product> products;
@@ -232,6 +239,15 @@ public class RestaurantsAsociation {
 			}
 		}
 		return allProductsBelong;
+	}
+	
+	public void saveData() throws FileNotFoundException, IOException{
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE));
+		oos.writeObject(restaurants);
+		oos.writeObject(clients);
+		oos.writeObject(products);
+		oos.writeObject(orders);
+		oos.close();
 	}
 	
 	public ArrayList<Restaurant> getRestaurants() {

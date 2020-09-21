@@ -5,10 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.security.SecureRandom;
 import java.awt.Taskbar.State;
+import java.io.Serializable;
 import java.math.BigInteger;
 
-public class Order {
+public class Order implements Serializable{
 	
+	private static final long serialVersionUID = 1;
+
 	enum Status{
 		REQUESTED,
 		PROCESSING,
@@ -29,7 +32,7 @@ public class Order {
 	 * @param nit The NIT of the restaurant who received the order
 	 * @param products A list of the products ordered
 	 */
-	public Order(String clientId, String nit, ArrayList<String[]> products) {
+	public Order(String clientId, String nit, ArrayList<String[]> products){
 		Calendar cal= Calendar.getInstance();
 		date = cal.getTime();
 		id = generateId();

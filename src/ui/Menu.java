@@ -1,6 +1,8 @@
 
 package ui;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -83,6 +85,13 @@ public class Menu {
 		System.out.println("Enter the name of the administrator");
 		String nameAdmin=read.nextLine();
 		System.out.println(consortium.registerRestaurant(name, nit, nameAdmin));
+		try {
+			consortium.saveData();
+		}catch(FileNotFoundException fnf) {
+			System.out.println(fnf.getMessage());
+		}catch(IOException io) {
+			System.out.println(io.getMessage());
+		}
 		
 			
 	}
@@ -109,6 +118,13 @@ public class Menu {
 		}catch(DuplicateProductException dp) {
 			System.out.println(dp.getMessage());
 		}
+		try {
+			consortium.saveData();
+		}catch(FileNotFoundException fnf) {
+			System.out.println(fnf.getMessage());
+		}catch(IOException io) {
+			System.out.println(io.getMessage());
+		}
 	}
 	
 	/**
@@ -133,6 +149,13 @@ public class Menu {
 		System.out.print("Enter the address:");
 		String address=read.nextLine();
 		System.out.println(consortium.registerClient(typeId, id, name, phoneNumber, address));	
+		try {
+			consortium.saveData();
+		}catch(FileNotFoundException fnf) {
+			System.out.println(fnf.getMessage());
+		}catch(IOException io) {
+			System.out.println(io.getMessage());
+		}
 	}
 	
 	/**

@@ -1,13 +1,17 @@
 package model;
 
-public class Client implements Comparable<Client>{
-	
+import java.io.Serializable;
+
+public class Client implements Comparable<Client>, Serializable{
+
 	enum Card{
 		IDENTITY_CARD,
 		CEDULA,
 		PASSPORT,
 		FOREIGNER_ID
 	}
+	
+	private static final long serialVersionUID = 1;
 	
 	private String id;
 	private String name;
