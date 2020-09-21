@@ -144,6 +144,18 @@ public class RestaurantsAsociation {
 		order.setProducts(products);
 	}
 	
+	public String removeOrder(String id) {
+		String message;
+		Order order=findOrder(id);
+		if(order==null) {
+			message="There is no order with the id "+id;
+		}else {
+			orders.remove(orders.indexOf(order));
+			message="The order was removed successfully";
+		}
+		return message;
+	}
+	
 	public void updateQuantityProduct(String id, int position, String quantity) {
 		Order order=findOrder(id);
 		order.setQuantityProduct(position, quantity);
