@@ -8,7 +8,7 @@ import java.awt.Taskbar.State;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-public class Order implements Serializable{
+public class Order implements Serializable, Comparable<Order>{
 	
 	private static final long serialVersionUID = 1;
 
@@ -50,6 +50,41 @@ public class Order implements Serializable{
 		SecureRandom random = new SecureRandom();
 		String id = new BigInteger(130, random).toString(32);
 		return id;
+	}
+	
+	@Override
+	public int compareTo(Order order) {
+		int comp;
+		int nit1 = Integer.parseInt(getNit());
+		int nit2 = Integer.parseInt(order.getNit());
+		comp=nit1-nit2;
+		if(comp==0) {
+			comp=organizeByClientId(order);
+		}
+		return comp;
+	}
+	
+	public int organizeByClientId(Order order) {
+		int comp;
+		int clientId1 = Integer.parseInt(getClientId());
+		int clientId2 = Integer.parseInt(order.getClientId());
+		comp=clientId2-clientId1;
+		if(comp==0) {
+			comp=organizeByDate(order);
+		}
+		return comp;
+	}
+	
+	public int organizeByDate(Order order) {
+		int comp=getDate().compareTo(order.getDate());
+		if(comp==0) {
+			
+		}
+		return comp;
+	}
+	
+	public int organizeById(Order order) {
+		return getId().compareTo(order.getId());
 	}
 
 	public String getId() {
@@ -107,6 +142,20 @@ public class Order implements Serializable{
 	public void setQuantityProduct(int position, String quantity) {
 		products.get(position)[1]=quantity;
 	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 }

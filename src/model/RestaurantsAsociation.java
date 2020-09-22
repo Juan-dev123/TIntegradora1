@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import exceptions.DuplicateProductException;
 import exceptions.NotFoundRestaurantException;
@@ -170,6 +172,24 @@ public class RestaurantsAsociation {
 		order.setQuantityProduct(position, quantity);
 	}
 	
+	public String exportOrders(String fileName, String separator) throws FileNotFoundException{
+		String message;
+		File file = new File(SAVE_PATH_FILE+"fileName");
+		if(!file.exists()) {
+			Collections.sort(orders);
+			PrintWriter pw = new PrintWriter(file);
+			pw.println("NIT"+separator+"Client id"+separator+"Date"+separator+"Product id");
+			for(Order order:orders) {
+				pw.println(order.getNit()+separator+order.getClientId()+separator+order.getDate().toString()+separator+order.getId());
+			}
+			pw.close();
+			message="The orders was exported successfully";
+		}else {
+			message="The orders was not exported because there is another file with the name "+fileName;
+		}
+		return message;
+	}
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;
@@ -262,6 +282,7 @@ public class RestaurantsAsociation {
 		oos.close();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadData() throws IOException, ClassNotFoundException{
 		File fileRestaurant = new File(SAVE_PATH_FILE+"restaurant.mor");
 		if(fileRestaurant.exists()) {

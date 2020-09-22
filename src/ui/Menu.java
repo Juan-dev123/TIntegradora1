@@ -39,6 +39,7 @@ public class Menu {
 			System.out.println("6 Update the data of a product");
 			System.out.println("7 Update the data of a client");
 			System.out.println("8 Update the data of an order");
+			System.out.println("9 Export the orders");
 			
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
@@ -65,6 +66,8 @@ public class Menu {
 				break;
 			case 8:
 				updateOrder();
+				break;
+			case 9:
 				break;
 			case -1:
 				stop=true;
@@ -403,6 +406,19 @@ public class Menu {
 				System.out.println(io.getMessage());
 			}
 		}
+	}
+	
+	public void exportOrders() {
+		System.out.print("Enter the name of the file: ");
+		String fileName=read.nextLine();
+		System.out.print("Enter the separator: ");
+		String separator=read.nextLine();
+		try {
+			System.out.println(consortium.exportOrders(fileName, separator));
+		}catch(FileNotFoundException fnf) {
+			System.out.println(fnf.getMessage());
+		}
+		
 	}
 	
 	public String changeOrderStatus(String orderId) {
