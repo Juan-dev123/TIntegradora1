@@ -31,15 +31,16 @@ public class Menu {
 		boolean stop=false;
 		do {
 			System.out.println("What do you want to do?");
-			System.out.println("1 Register a restaurant");
-			System.out.println("2 Register a product");
-			System.out.println("3 Register a client");
-			System.out.println("4 Register an order");
-			System.out.println("5 Update the data of a restaurant");
-			System.out.println("6 Update the data of a product");
-			System.out.println("7 Update the data of a client");
-			System.out.println("8 Update the data of an order");
-			System.out.println("9 Export the orders");
+			System.out.println("01 Register a restaurant");
+			System.out.println("02 Register a product");
+			System.out.println("03 Register a client");
+			System.out.println("04 Register an order");
+			System.out.println("05 Update the data of a restaurant");
+			System.out.println("06 Update the data of a product");
+			System.out.println("07 Update the data of a client");
+			System.out.println("08 Update the data of an order");
+			System.out.println("09 Export the orders");
+			System.out.println("10 Show restaurants");
 			
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
@@ -68,6 +69,10 @@ public class Menu {
 				updateOrder();
 				break;
 			case 9:
+				exportOrders();
+				break;
+			case 10:
+				showRestaurants();
 				break;
 			case -1:
 				stop=true;
@@ -419,6 +424,10 @@ public class Menu {
 			System.out.println(fnf.getMessage());
 		}
 		
+	}
+	
+	public void showRestaurants() {
+		System.out.print(consortium.showRestaurants());
 	}
 	
 	public String changeOrderStatus(String orderId) {

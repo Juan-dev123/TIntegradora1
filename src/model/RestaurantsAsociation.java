@@ -190,6 +190,17 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	public String showRestaurants() {
+		String message="";
+		Collections.sort(restaurants);
+		int i=0;
+		for(Restaurant restaurant:restaurants) {
+			i++;
+			message+=i+" "+restaurant.toString()+"\n";
+		}
+		return message;
+	}
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;

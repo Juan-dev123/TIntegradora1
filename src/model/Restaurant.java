@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Restaurant implements Serializable{
+public class Restaurant implements Serializable, Comparable<Restaurant>{
 	
 	private static final long serialVersionUID = 1;
 	
@@ -44,6 +44,11 @@ public class Restaurant implements Serializable{
 	public String toString() {
 		String message="Name: "+name+"\nNIT: "+nit+"\nName of the Administrator: "+nameAdmin;
 		return message;
+	}
+
+	@Override
+	public int compareTo(Restaurant restaurant) {
+		return getName().compareTo(restaurant.getName());
 	}
 
 
