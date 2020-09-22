@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class Client implements Comparable<Client>, Serializable{
 
@@ -15,7 +16,7 @@ public class Client implements Comparable<Client>, Serializable{
 	
 	private String id;
 	private String name;
-	private String phoneNumber;
+	private BigInteger phoneNumber;
 	private String address;
 	
 	private Order order;
@@ -34,7 +35,7 @@ public class Client implements Comparable<Client>, Serializable{
 		this.typeId = Card.values()[typeId];
 		this.id = id;
 		this.name = name;
-		this.phoneNumber = phoneNumber;
+		this.phoneNumber = new BigInteger(phoneNumber);
 		this.address = address;
 	}
 	
@@ -93,12 +94,12 @@ public class Client implements Comparable<Client>, Serializable{
 		return name.compareToIgnoreCase(client.getName());
 	}
 
-	public String getPhoneNumber() {
+	public BigInteger getPhoneNumber() {
 		return phoneNumber;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+		this.phoneNumber = new BigInteger(phoneNumber);
 	}
 
 	public String getAddress() {

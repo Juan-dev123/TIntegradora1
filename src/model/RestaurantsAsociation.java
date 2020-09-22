@@ -201,6 +201,18 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	public String showClients() {
+		String message="";
+		PhoneNumberComparator pnc = new PhoneNumberComparator();
+		Collections.sort(clients, pnc);
+		int i=0;
+		for(Client client:clients) {
+			i++;
+			message+=i+" "+client.toString()+"\n";
+		}
+		return message;
+	}
+	
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;

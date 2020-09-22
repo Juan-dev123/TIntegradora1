@@ -40,7 +40,8 @@ public class Menu {
 			System.out.println("07 Update the data of a client");
 			System.out.println("08 Update the data of an order");
 			System.out.println("09 Export the orders");
-			System.out.println("10 Show restaurants");
+			System.out.println("10 Show restaurants in ascending alphabetical order");
+			System.out.println("11 Show clients in order of their descending phone number");
 			
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
@@ -73,6 +74,9 @@ public class Menu {
 				break;
 			case 10:
 				showRestaurants();
+				break;
+			case 11:
+				showClients();
 				break;
 			case -1:
 				stop=true;
@@ -428,6 +432,10 @@ public class Menu {
 	
 	public void showRestaurants() {
 		System.out.print(consortium.showRestaurants());
+	}
+	
+	public void showClients() {
+		System.out.print(consortium.showClients());
 	}
 	
 	public String changeOrderStatus(String orderId) {
