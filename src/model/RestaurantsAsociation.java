@@ -1,9 +1,11 @@
 package model;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,29 +18,30 @@ import exceptions.NotFoundRestaurantException;
 
 public class RestaurantsAsociation {
 	
-	public static final String SAVE_PATH_FILE = "data/";
+	public static final String DATA_PATH_FILE = "data/";
 	
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<Client> clients;
 	private ArrayList<Product> products;
 	private ArrayList<Order> orders;
 	
-	public RestaurantsAsociation() {
+	public RestaurantsAsociation() throws IOException, ClassNotFoundException{
 		restaurants = new ArrayList<Restaurant>();
 		clients = new ArrayList<Client>();
 		products = new ArrayList<Product>();
 		orders=new ArrayList<Order>(); 
+		loadData();
 	}
 	
-	public String registerRestaurant(String name, String nit, String nameAdmin){
-		String message;
+	public boolean registerRestaurant(String name, String nit, String nameAdmin){
+		boolean registered;
 		if(findRestaurant(nit)==null) {
 			restaurants.add(new Restaurant(name,nit,nameAdmin));
-			message="The restaurant was registered successfully";
+			registered=true;
 		}else {
-			message="The restaurant was not registered.\nThere is already a restaurant registered with the NIT: "+nit;
+			registered=false;
 		}
-		return message;
+		return registered;
 	}
 	
 	public void registerProduct(String id, String name, String description, double price, String nit) throws NotFoundRestaurantException, DuplicateProductException{
@@ -52,11 +55,14 @@ public class RestaurantsAsociation {
 		products.add(product);
 	}
 	
-	public String registerClient(int typeId, String id, String name, String phoneNumber, String address) {
+	public String registerClient(int typeId, String id, String name, String lastName,String phoneNumber, String address) {
 		String message;
 		if(findClient(id)==null) {
-			addClient(typeId, id, name, phoneNumber, address);
+			addClient(typeId, id, name, lastName,phoneNumber, address);
 			message="The client was added successfully";
+			for(Client client:clients) {
+				message+="\n"+client.getLastName()+" "+client.getName();
+			}
 		}else {
 			message="The client was not added. There is already a client with the id: "+id;
 		}
@@ -65,7 +71,9 @@ public class RestaurantsAsociation {
 	
 	public String registerOrder(String clientId, String nit, ArrayList<String[]> products) {
 		String message;
-		if(checkProducts(nit, products)) {
+		if(products.isEmpty()) {
+			message="No product was added. So, the order was not registered";
+		}else if(checkProducts(nit, products)) {
 			message="All the products do not belong to the same restaurant. So, the order was not registered";
 		}else {
 			Client client = findClient(clientId);
@@ -124,14 +132,20 @@ public class RestaurantsAsociation {
 			client.setId(data);
 			break;
 		case 3:
-			client.setName(data);
+			client.setName(data.toUpperCase());
+			Collections.sort(clients);
 			break;
 		case 4:
-			client.setPhoneNumber(data);
+			client.setLastName(data.toUpperCase());
+			Collections.sort(clients);
 			break;
 		case 5:
+			client.setPhoneNumber(data);
+			break;
+		case 6:
 			client.setAddress(data);
 			break;
+		
 		}
 	}
 	
@@ -172,10 +186,8 @@ public class RestaurantsAsociation {
 		order.setQuantityProduct(position, quantity);
 	}
 	
-	public String exportOrders(String fileName, String separator) throws FileNotFoundException{
+	public String exportOrders(File file, String separator) throws FileNotFoundException{
 		String message;
-		File file = new File(SAVE_PATH_FILE+"fileName");
-		if(!file.exists()) {
 			Collections.sort(orders);
 			PrintWriter pw = new PrintWriter(file);
 			pw.println("NIT"+separator+"Client id"+separator+"Date"+separator+"Product id");
@@ -184,12 +196,75 @@ public class RestaurantsAsociation {
 			}
 			pw.close();
 			message="The orders was exported successfully";
-		}else {
-			message="The orders was not exported because there is another file with the name "+fileName;
-		}
 		return message;
 	}
 	
+	public String searchClientByName(String name, String lastName){
+		String fullName = lastName+" "+name;
+		String message="There is no client with the name "+name+" "+lastName;
+		int b = 0; //begin
+		int f = clients.size()-1; //final
+		boolean found = false;
+		long begin = System.currentTimeMillis();
+		while(b<=f && !found) {
+			int m = (b+f)/2; //middle
+			int comp = fullName.compareTo(clients.get(m).getFullName());
+			if(comp==0) {
+				found = true;
+				message=clients.get(m).toString();
+				found=true;
+			}else if(comp>0) {
+				f = m-1;
+			}else {
+				b = m+1;
+			}
+		}
+		long end = System.currentTimeMillis();
+		message += "\nThe time spent searching were "+String.valueOf(end-begin)+" milliseconds";
+		return message;
+	}
+	
+	public String[] importRestaurants(File file) throws IOException {
+		String[] message = new String[2];
+		String report="";
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		br.readLine();
+		String line = br.readLine();
+		int i=0;
+		while(line!=null) {
+			String[] dataRestaurant=line.split(";");
+			if(!registerRestaurant(dataRestaurant[0],dataRestaurant[1],dataRestaurant[2])) {
+				i++;
+				report+=i+(new Restaurant(dataRestaurant[0],dataRestaurant[1],dataRestaurant[2]).toString())+"\n";
+			}
+			line=br.readLine();
+		}
+		if(i==0) {
+			message[0]="All the restaurants were imported successfully";
+			message[1]=report;
+		}else {
+			message[0]="Some restaurants were not imported because the NIT";
+			message[1]=report;
+		}
+		br.close();
+		return message;
+	}
+	public ArrayList<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(ArrayList<Product> products) {
+		this.products = products;
+	}
+
+	public ArrayList<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(ArrayList<Order> orders) {
+		this.orders = orders;
+	}
+
 	public String showRestaurants() {
 		String message="";
 		Collections.sort(restaurants);
@@ -210,6 +285,7 @@ public class RestaurantsAsociation {
 			i++;
 			message+=i+" "+client.toString()+"\n";
 		}
+		Collections.sort(clients);
 		return message;
 	}
 	
@@ -261,16 +337,20 @@ public class RestaurantsAsociation {
 		return order;
 	}
 	
-	public void addClient(int typeId, String id, String name, String phoneNumber, String address) {
-		Client client = new Client(typeId, id, name, phoneNumber, address);
+	public void addClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
+		Client client = new Client(typeId, id, name, lastName,phoneNumber, address);
 		if(clients.isEmpty()) {
 			clients.add(client);
 		}else {
 			boolean inserted=false;
 			for(int i=0; i<clients.size() && !inserted; i++) {
-				if(clients.get(i).compareTo(client)<0) {
+				if(clients.get(i).compareTo(client)>0) {
 					clients.add(i, client);
+					inserted=true;
 				}
+			}
+			if(!inserted) {
+				clients.add(client);
 			}
 		}
 		
@@ -287,7 +367,7 @@ public class RestaurantsAsociation {
 	}
 	
 	public void saveData(String typeObject) throws FileNotFoundException, IOException{
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE+typeObject+".mor"));
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DATA_PATH_FILE+typeObject+".mor"));
 		switch(typeObject) {
 		case "restaurant":
 			oos.writeObject(restaurants);
@@ -307,25 +387,25 @@ public class RestaurantsAsociation {
 	
 	@SuppressWarnings("unchecked")
 	public void loadData() throws IOException, ClassNotFoundException{
-		File fileRestaurant = new File(SAVE_PATH_FILE+"restaurant.mor");
+		File fileRestaurant = new File(DATA_PATH_FILE+"restaurant.mor");
 		if(fileRestaurant.exists()) {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileRestaurant));
 			restaurants=(ArrayList<Restaurant>)ois.readObject();
 			ois.close();
 		}
-		File fileClient = new File(SAVE_PATH_FILE+"client.mor");
+		File fileClient = new File(DATA_PATH_FILE+"client.mor");
 		if(fileClient.exists()) {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileClient));
 			clients=(ArrayList<Client>)ois.readObject();
 			ois.close();
 		}
-		File fileProduct = new File(SAVE_PATH_FILE+"product.mor");
+		File fileProduct = new File(DATA_PATH_FILE+"product.mor");
 		if(fileProduct.exists()) {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileProduct));
 			products=(ArrayList<Product>)ois.readObject();
 			ois.close();
 		}
-		File fileOrder = new File(SAVE_PATH_FILE+"order.mor");
+		File fileOrder = new File(DATA_PATH_FILE+"order.mor");
 		if(fileOrder.exists()) {
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileOrder));
 			orders=(ArrayList<Order>)ois.readObject();
@@ -338,17 +418,11 @@ public class RestaurantsAsociation {
 		return restaurants;
 	}
 
-	public void setRestaurants(ArrayList<Restaurant> restaurants) {
-		this.restaurants = restaurants;
-	}
-
 	public ArrayList<Client> getClients() {
 		return clients;
 	}
 
-	public void setClients(ArrayList<Client> clients) {
-		this.clients = clients;
-	}
+
 
 
 	

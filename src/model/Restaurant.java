@@ -1,28 +1,27 @@
 package model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 public class Restaurant implements Serializable, Comparable<Restaurant>{
 	
 	private static final long serialVersionUID = 1;
 	
 	String name;
-	BigInteger nit;
+	String nit;
 	String nameAdmin;
 	
-	public Restaurant(String name, BigInteger nit, String nameAdmin) {
+	public Restaurant(String name, String nit, String nameAdmin) {
 		this.name = name;
 		this.nit = nit;
 		this.nameAdmin = nameAdmin;
 	}
 
-	public BigInteger getNit() {
+	public String getNit() {
 		return nit;
 	}
 
 	public void setNit(String nit) {
-		this.nit = new BigInteger(nit);
+		this.nit = nit;
 	}
 	
 	public String getName() {

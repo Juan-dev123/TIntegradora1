@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 public class Client implements Comparable<Client>, Serializable{
 
@@ -16,7 +15,8 @@ public class Client implements Comparable<Client>, Serializable{
 	
 	private String id;
 	private String name;
-	private BigInteger phoneNumber;
+	private String lastName;
+	private String phoneNumber;
 	private String address;
 	
 	private Order order;
@@ -31,11 +31,12 @@ public class Client implements Comparable<Client>, Serializable{
 	 * @param phoneNumber The phone number
 	 * @param address The address
 	 */
-	public Client(int typeId, String id, String name, String phoneNumber, String address) {
+	public Client(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
 		this.typeId = Card.values()[typeId];
 		this.id = id;
-		this.name = name;
-		this.phoneNumber = new BigInteger(phoneNumber);
+		this.name = name.toUpperCase();
+		this.lastName = lastName.toUpperCase();
+		this.phoneNumber = phoneNumber;
 		this.address = address;
 	}
 	
@@ -62,6 +63,10 @@ public class Client implements Comparable<Client>, Serializable{
 	public String getName() {
 		return name;
 	}
+	
+	public String getFullName() {
+		return lastName+" "+name;
+	}
 
 	/**
 	 * It sets the name
@@ -77,7 +82,7 @@ public class Client implements Comparable<Client>, Serializable{
 	 * @return The string
 	 */
 	public String toString() {
-		String message="Name: "+name+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address;
+		String message="Name: "+name+"\nLast name: "+lastName+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address;
 		return message;
 	}
 
@@ -91,15 +96,19 @@ public class Client implements Comparable<Client>, Serializable{
 
 	@Override
 	public int compareTo(Client client) {
-		return name.compareToIgnoreCase(client.getName());
+		int comp=client.getLastName().compareTo(lastName);
+		if(comp==0) {
+			comp=client.getName().compareTo(name);
+		}
+		return comp;
 	}
 
-	public BigInteger getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = new BigInteger(phoneNumber);
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getAddress() {
@@ -117,6 +126,16 @@ public class Client implements Comparable<Client>, Serializable{
 	public void setTypeId(int typeId) {
 		this.typeId = Card.values()[typeId];
 	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	
 	
 	
 	

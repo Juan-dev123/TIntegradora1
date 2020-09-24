@@ -1,6 +1,7 @@
 
 package ui;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,14 @@ public class Menu {
 	 */
 	public Menu() {
 		read=new Scanner(System.in);
-		consortium=new RestaurantsAsociation();
+		try {
+			consortium=new RestaurantsAsociation();
+		}catch(ClassNotFoundException cnf) {
+			System.out.println(cnf.getMessage());
+		}catch(IOException io) {
+			System.out.println(io.getMessage());
+		}
+		
 	}
 	
 	/**
@@ -42,6 +50,8 @@ public class Menu {
 			System.out.println("09 Export the orders");
 			System.out.println("10 Show restaurants in ascending alphabetical order");
 			System.out.println("11 Show clients in order of their descending phone number");
+			System.out.println("12 Search for a client by his name efficiently");
+			System.out.println("13 Import data of restaurants from a file cvs");
 			
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
@@ -78,6 +88,12 @@ public class Menu {
 			case 11:
 				showClients();
 				break;
+			case 12:
+				searchClientByName();
+				break;
+			case 13:
+				importRestaurants();
+				break;
 			case -1:
 				stop=true;
 				break;
@@ -90,13 +106,17 @@ public class Menu {
 	 * It registers a restaurant
 	 */
 	public void registerRestaurant() {
-		System.out.println("Enter the name of the restaurant");
+		System.out.print("Enter the name of the restaurant: ");
 		String name=read.nextLine();
-		System.out.println("Enter the NIT");
+		System.out.print("Enter the NIT: ");
 		String nit=read.nextLine();
-		System.out.println("Enter the name of the administrator");
+		System.out.print("Enter the name of the administrator: ");
 		String nameAdmin=read.nextLine();
-		System.out.println(consortium.registerRestaurant(name, nit, nameAdmin));
+		if(consortium.registerRestaurant(name, nit, nameAdmin)){
+			System.out.println("The restaurant was registered successfully");
+		}else {
+			System.out.println("The restaurant was not registered.\\nThere is already a restaurant registered with the NIT: "+nit);
+		}
 		try {
 			consortium.saveData("restaurant");
 		}catch(FileNotFoundException fnf) {
@@ -152,13 +172,15 @@ public class Menu {
 		}while(typeId>4 || typeId<1);
 		System.out.print("Enter the number of the id:");
 		String id=read.nextLine();
-		System.out.print("Enter the full name:");
+		System.out.print("Enter the name:");
 		String name=read.nextLine();
+		System.out.print("Enter the last name: ");
+		String lastName=read.nextLine();
 		System.out.print("Enter the phoneNumber:");
 		String phoneNumber=read.nextLine();
 		System.out.print("Enter the address:");
 		String address=read.nextLine();
-		System.out.println(consortium.registerClient(typeId, id, name, phoneNumber, address));	
+		System.out.println(consortium.registerClient(typeId, id, name, lastName,phoneNumber, address));	
 		try {
 			consortium.saveData("client");
 		}catch(FileNotFoundException fnf) {
@@ -199,7 +221,8 @@ public class Menu {
 				}
 				System.out.print("Enter the NIT of the restaurant: ");
 				nit=read.nextLine();
-			}while(consortium.findRestaurant(nit)!=null);
+				firstTime=false;
+			}while(consortium.findRestaurant(nit)==null);
 			addProducts(products);
 			System.out.println(consortium.registerOrder(clientId, nit, products));
 			try {
@@ -312,10 +335,11 @@ public class Menu {
 			System.out.println("Which one do you want to change?");
 			System.out.println("1 Type of id");
 			System.out.println("2 Number of the id");
-			System.out.println("3 The full name");
-			System.out.println("4 The phone number");
-			System.out.println("5 The address");
-			System.out.println("6 The products list");
+			System.out.println("3 The name");
+			System.out.println("4 The last name");
+			System.out.println("5 The phone number");
+			System.out.println("6 The address");
+			System.out.println("7 The products list");
 			int option=Integer.parseInt(read.nextLine());
 			
 			switch(option) {
@@ -342,16 +366,21 @@ public class Menu {
 				consortium.updateDataClient(id, option, name);
 				break;
 			case 4:
+				System.out.print("Enter the new last name: ");
+				String lastName=read.nextLine();
+				consortium.updateDataClient(id, option, lastName);
+				break;
+			case 5:
 				System.out.print("Enter the new phone number: ");
 				String phoneNumber=read.nextLine();
 				consortium.updateDataClient(id, option, phoneNumber);
 				break;
-			case 5:
+			case 6:
 				System.out.print("Enter the new address: ");
 				String address=read.nextLine();
 				consortium.updateDataProduct(id, option, address);
 				break;
-			case 6:
+			case 7:
 				do {
 					System.out.println("What do you want to do?");
 					System.out.println("1 Update an order");
@@ -422,12 +451,7 @@ public class Menu {
 		String fileName=read.nextLine();
 		System.out.print("Enter the separator: ");
 		String separator=read.nextLine();
-		try {
-			System.out.println(consortium.exportOrders(fileName, separator));
-		}catch(FileNotFoundException fnf) {
-			System.out.println(fnf.getMessage());
-		}
-		
+		createOrdersFile(fileName, separator);
 	}
 	
 	public void showRestaurants() {
@@ -436,6 +460,14 @@ public class Menu {
 	
 	public void showClients() {
 		System.out.print(consortium.showClients());
+	}
+	
+	public void searchClientByName() {
+		System.out.print("Enter the name: ");
+		String name = read.nextLine().toUpperCase();
+		System.out.print("Enter the last name: ");
+		String lastName = read.nextLine().toUpperCase();
+		System.out.println(consortium.searchClientByName(name, lastName));
 	}
 	
 	public String changeOrderStatus(String orderId) {
@@ -481,9 +513,9 @@ public class Menu {
 			System.out.println("When you want to stop enter -1");
 			System.out.println("Enter the id of the product");
 			idProduct=read.nextLine();
-			if(consortium.findProduct(idProduct)==null && !idProduct.equals("-1")) {
+			if(consortium.findProduct(idProduct)==null || !idProduct.equals("-1")) {
 				System.out.println("The product with the id "+idProduct+" does not exist");
-			}else {
+			}else if(!idProduct.equals("-1")){
 				System.out.print("Enter que quantity: ");
 				int quantity=Integer.parseInt(read.nextLine());
 				boolean found=false;
@@ -538,6 +570,63 @@ public class Menu {
 				consortium.updateQuantityProduct(id, position, quantity);
 			}
 			break;
+		}
+	}
+	
+	public void createOrdersFile(String fileName, String separator) {
+		File file = new File(RestaurantsAsociation.DATA_PATH_FILE+fileName);
+		if(file.exists()) {
+			char answer;
+			do {
+				System.out.println("A file with that name already exist");
+				System.out.println("Do you want to overwrite the file? Y/N");
+				answer = read.nextLine().toUpperCase().charAt(0);
+			}while(answer!='Y' || answer!='N');
+			if(answer=='Y') {
+				try {
+					System.out.println(consortium.exportOrders(file, separator));
+				}catch(FileNotFoundException fnf) {
+					System.out.println(fnf.getMessage());
+				}
+			}else {
+				System.out.println("Enter another name: ");
+				String anotherName = read.nextLine();
+				createOrdersFile(anotherName, separator);
+			}	
+		}else {
+			try {
+				System.out.println(consortium.exportOrders(file, separator));
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}
+		}
+		
+	}
+	
+	public void importRestaurants() {
+		System.out.print("Enter the name of the file without \".cvs\": ");
+		String fileName=read.nextLine();
+		File file = new File(RestaurantsAsociation.DATA_PATH_FILE+fileName+".cvs");
+		if(!file.exists()) {
+			System.out.println("There is no file with the name "+fileName);
+		}else {
+			try {
+				String[] message=consortium.importRestaurants(file);
+				System.out.println(message[0]);
+				char answer;
+				if(message[1]!="") {
+					do {
+						System.out.println("Do you want to see the restaurants that were not imported Y/N");
+						answer=read.nextLine().toUpperCase().charAt(0);
+					}while(answer!='Y' && answer!='N');
+					if(answer=='Y') {
+						System.out.print(consortium.importRestaurants(file)[1]);
+					}
+				}
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
+			
 		}
 	}
 }
