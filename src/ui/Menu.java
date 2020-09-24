@@ -52,6 +52,9 @@ public class Menu {
 			System.out.println("11 Show clients in order of their descending phone number");
 			System.out.println("12 Search for a client by his name efficiently");
 			System.out.println("13 Import data of restaurants from a file cvs");
+			System.out.println("14 ");
+			System.out.println("15 Import data of products from a file cvs");
+			
 			
 			int option=Integer.parseInt(read.nextLine());
 			switch(option) {
@@ -93,6 +96,9 @@ public class Menu {
 				break;
 			case 13:
 				importRestaurants();
+				break;
+			case 15:
+				importProducts();
 				break;
 			case -1:
 				stop=true;
@@ -620,9 +626,38 @@ public class Menu {
 						answer=read.nextLine().toUpperCase().charAt(0);
 					}while(answer!='Y' && answer!='N');
 					if(answer=='Y') {
-						System.out.print(consortium.importRestaurants(file)[1]);
+						System.out.print(message[1]);
 					}
 				}
+				consortium.saveData("restaurant");
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
+			
+		}
+	}
+	
+	public void importProducts() {
+		System.out.print("Enter the name of the file without \".cvs\": ");
+		String fileName=read.nextLine();
+		File file = new File(RestaurantsAsociation.DATA_PATH_FILE+fileName+".cvs");
+		if(!file.exists()) {
+			System.out.println("There is no file with the name "+fileName);
+		}else {
+			try {
+				String[] message=consortium.importProducts(file);
+				System.out.println(message[0]);
+				char answer;
+				if(message[1]!="") {
+					do {
+						System.out.println("Do you want to see the products that were not imported Y/N");
+						answer=read.nextLine().toUpperCase().charAt(0);
+					}while(answer!='Y' && answer!='N');
+					if(answer=='Y') {
+						System.out.print(message[1]);
+					}
+				}
+				consortium.saveData("product");
 			}catch(IOException io) {
 				System.out.println(io.getMessage());
 			}

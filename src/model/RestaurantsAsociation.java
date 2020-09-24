@@ -249,6 +249,47 @@ public class RestaurantsAsociation {
 		br.close();
 		return message;
 	}
+	
+	public String[] importProducts(File file) throws IOException{
+		String[] message = new String[2];
+		String report="";
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		br.readLine();
+		String line = br.readLine();
+		int i=0;
+		while(line!=null) {
+			String[] dataProduct=line.split(";");
+			if(!importProduct(dataProduct[0],dataProduct[1],dataProduct[2],dataProduct[3],dataProduct[4])) {
+				i++;
+				report+=i+(new Product(dataProduct[0],dataProduct[1],dataProduct[2],Double.parseDouble(dataProduct[3]),dataProduct[4]).toString())+"\n";
+			}
+			line=br.readLine();
+		}
+		if(i==0) {
+			message[0]="All the products were imported successfully";
+			message[1]=report;
+		}else {
+			message[0]="Some products were not imported because the id or the NIT";
+			message[1]=report;
+		}
+		br.close();
+		return message;
+	}
+	
+	public boolean importProduct(String id, String name, String description, String price, String nit) {
+		boolean registered=true;
+		if(findRestaurant(nit)==null) {
+			registered=false;
+		}else if(findProduct(id)!=null) {
+			registered=false;
+		}else {
+			Product product=new Product(id, name, description, Double.parseDouble(price), nit);
+			products.add(product);
+		}
+		return registered;
+		
+	}
+	
 	public ArrayList<Product> getProducts() {
 		return products;
 	}

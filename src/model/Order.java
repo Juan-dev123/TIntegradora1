@@ -47,8 +47,11 @@ public class Order implements Serializable, Comparable<Order>{
 	 * @return The id
 	 */
 	public String generateId() {
-		SecureRandom random = new SecureRandom();
-		String id = new BigInteger(130, random).toString(32);
+		String id;
+		do {
+			SecureRandom random = new SecureRandom();
+			id = new BigInteger(32, random).toString();
+		}while(id.length()!=10);
 		return id;
 	}
 	
