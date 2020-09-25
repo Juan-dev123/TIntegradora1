@@ -294,7 +294,10 @@ public class Menu {
 			}
 		}
 	}
-	
+
+	/**
+	 * It updates the data of a product
+	 */
 	public void updateProduct() {
 		System.out.print("Enter the id of the product:");
 		String id=read.nextLine();
@@ -345,6 +348,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It updates the data of a client
+	 */
 	public void updateClient() {
 		System.out.print("Enter the id of the client: ");
 		String id=read.nextLine();
@@ -427,6 +433,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It updates the data of an order
+	 */
 	public void updateOrder() {
 		System.out.print("Enter the id of the order: ");
 		String id=read.nextLine();
@@ -465,22 +474,34 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It exports in a file cvs the data of the orders
+	 */
 	public void exportOrders() {
-		System.out.print("Enter the name of the file: ");
-		String fileName=read.nextLine();
+		System.out.print("Enter the name of the file without \".cvs\":: ");
+		String fileName=read.nextLine()+".cvs";
 		System.out.print("Enter the separator: ");
 		String separator=read.nextLine();
 		createOrdersFile(fileName, separator);
 	}
 	
+	/**
+	 * It prints on console all the restaurants ordered by ascending name
+	 */
 	public void showRestaurants() {
 		System.out.print(consortium.showRestaurants());
 	}
 	
+	/**
+	 * It prints on console all the clients ordered by descending phone number
+	 */
 	public void showClients() {
 		System.out.print(consortium.showClients());
 	}
 	
+	/**
+	 * It searches a client by his name
+	 */
 	public void searchClientByName() {
 		System.out.print("Enter the name: ");
 		String name = read.nextLine().toUpperCase();
@@ -489,6 +510,11 @@ public class Menu {
 		System.out.println(consortium.searchClientByName(name, lastName));
 	}
 	
+	/**
+	 * It changes the status of on order
+	 * @param orderId The id of the order
+	 * @return The status
+	 */
 	public String changeOrderStatus(String orderId) {
 		String status=consortium.findOrder(orderId).getState();
 		int option;
@@ -526,6 +552,10 @@ public class Menu {
 		return status;
 	}
 	
+	/**
+	 * It adds products to one order
+	 * @param products The list of products
+	 */
 	public void addProducts(ArrayList<String[]> products) {
 		String idProduct;
 		do {
@@ -557,6 +587,10 @@ public class Menu {
 		}while(!(idProduct.equals("-1")));
 	}
 	
+	/**
+	 * It updates the data of a list of products 
+	 * @param id
+	 */
 	public void updateProductsList(String id) {
 		int option;
 		System.out.println("What do you want to do?");
@@ -596,6 +630,11 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It creates a file cvs with all the orders
+	 * @param fileName The name of the file
+	 * @param separator The separator
+	 */
 	public void createOrdersFile(String fileName, String separator) {
 		File file = new File(RestaurantsAsociation.DATA_PATH_FILE+fileName);
 		if(file.exists()) {
@@ -604,7 +643,7 @@ public class Menu {
 				System.out.println("A file with that name already exist");
 				System.out.println("Do you want to overwrite the file? Y/N");
 				answer = read.nextLine().toUpperCase().charAt(0);
-			}while(answer!='Y' || answer!='N');
+			}while(answer!='Y' && answer!='N');
 			if(answer=='Y') {
 				try {
 					System.out.println(consortium.exportOrders(file, separator));
@@ -626,6 +665,9 @@ public class Menu {
 		
 	}
 	
+	/**
+	 * It imports data of restaurants from a file cvs
+	 */
 	public void importRestaurants() {
 		System.out.print("Enter the name of the file without \".cvs\": ");
 		String fileName=read.nextLine();
@@ -654,6 +696,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It imports data of products from a file cvs
+	 */
 	public void importProducts() {
 		System.out.print("Enter the name of the file without \".cvs\": ");
 		String fileName=read.nextLine();
@@ -681,6 +726,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It imports data of orders from a file cvs
+	 */
 	public void importOrders() {
 		System.out.print("Enter the name of the file without \".cvs\": ");
 		String fileName=read.nextLine();
@@ -708,6 +756,9 @@ public class Menu {
 		}
 	}
 	
+	/**
+	 * It imports data of clients from a file cvs
+	 */
 	public void importClients() {
 		System.out.print("Enter the name of the file without \".cvs\": ");
 		String fileName=read.nextLine();

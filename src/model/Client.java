@@ -98,15 +98,26 @@ public class Client implements Comparable<Client>, Serializable{
 		return message;
 	}
 
+	/**
+	 * @return The order
+	 */
 	public ArrayList<Order> getOrder() {
 		return orders;
 	}
 
+	/**
+	 * It adds an order
+	 * @param order The order
+	 */
 	public void addOrder(Order order) {
 		orders.add(order);
 	}
 
 	@Override
+	/**
+	 * It compares two clients
+	 * @return A number major than 0 if the client is major than the entered. A number minor than 0 if the client is minor. 0 if they are equals
+	 */
 	public int compareTo(Client client) {
 		int comp=client.getLastName().compareTo(lastName);
 		if(comp==0) {
@@ -115,43 +126,73 @@ public class Client implements Comparable<Client>, Serializable{
 		return comp;
 	}
 
+	/**
+	 * @return The phone number
+	 */
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
+	/**
+	 * @param phoneNumber The phone number
+	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
+	/**
+	 * @return The address
+	 */
 	public String getAddress() {
 		return address;
 	}
 
+	/**
+	 * @param address The address
+	 */
 	public void setAddress(String address) {
 		this.address = address;
 	}
 
+	/**
+	 * @return The type id
+	 */
 	public Card getTypeId() {
 		return typeId;
 	}
 
+	/**
+	 * @param typeId The type id
+	 */
 	public void setTypeId(int typeId) {
 		this.typeId = Card.values()[typeId];
 	}
 
+	/**
+	 * @return The last name
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * @param lastName The last name
+	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+	/**
+	 * It removes an order given his id
+	 * @param orderId The id
+	 */
+	public void removeOrder(String orderId){
+		boolean stop=false;;
+		for(int i=0; i<orders.size() && !stop; i++){
+			if(orders.get(i).getId().equals(orderId)){
+				orders.remove(i);
+				stop=true;
+			}
+		}
+	}	
 }

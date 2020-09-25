@@ -41,39 +41,60 @@ public class Product implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	/**
+	 * @return The name
+	 */
 	public String getName() {
 		return name;
 	}
+
+	/**
+	 * @param name The name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * @return The description
+	 */
 	public String getDescription() {
 		return description;
 	}
+
+	/**
+	 * @param description The description
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	/**
+	 * @return The price
+	 */
 	public double getPrice() {
 		return price;
 	}
+
+	/**
+	 * @param price The price
+	 */
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
+	/**
+	 * @return The NIT
+	 */
 	public String getNit() {
 		return nit;
 	}
+
+	/**
+	 * @param nit The NIT
+	 */
 	public void setNit(String nit) {
 		this.nit = nit;
-	}
-	
-	
-	
-	/**
-	@Override
-	public String toString() {
-		String message="Name: "+name+"\nDescription:";
-		return message;
-	} **/
-	
-	
+	}			
 }

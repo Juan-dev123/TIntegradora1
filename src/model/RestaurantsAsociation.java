@@ -27,7 +27,11 @@ public class RestaurantsAsociation {
 	private ArrayList<Product> products;
 	private ArrayList<Order> orders;
 	
-	
+	/**
+	 * It creates a new object type RestaurantsAsociation
+	 * @throws IOException If there is a problem reading the file
+	 * @throws ClassNotFoundException If there is a problem converting the data of the file to the objects.
+	 */
 	public RestaurantsAsociation() throws IOException, ClassNotFoundException{
 		restaurants = new ArrayList<Restaurant>();
 		clients = new ArrayList<Client>();
@@ -36,6 +40,13 @@ public class RestaurantsAsociation {
 		loadData();
 	}
 	
+	/**
+	 * It registers a restaurant
+	 * @param name The name
+	 * @param nit The NIT
+	 * @param nameAdmin The name of the administrator
+	 * @return True if the restaurant was registered. False if it was not
+	 */
 	public boolean registerRestaurant(String name, String nit, String nameAdmin){
 		boolean registered;
 		if(findRestaurant(nit)==null) {
@@ -47,6 +58,16 @@ public class RestaurantsAsociation {
 		return registered;
 	}
 	
+	/**
+	 * It registers a product
+	 * @param id The id
+	 * @param name The name
+	 * @param description The description
+	 * @param price The price
+	 * @param nit The NIT of the restaurant that offers this product
+	 * @throws NotFoundRestaurantException If there is no restaurant with the NIT entered
+	 * @throws DuplicateProductException If there is a product already registered with the id entered
+	 */
 	public void registerProduct(String id, String name, String description, double price, String nit) throws NotFoundRestaurantException, DuplicateProductException{
 		if(findRestaurant(nit)==null) {
 			throw new NotFoundRestaurantException(nit);
@@ -57,7 +78,17 @@ public class RestaurantsAsociation {
 		Product product=new Product(id, name, description, price, nit);
 		products.add(product);
 	}
-	
+
+	/**
+	 * It registers a client
+	 * @param typeId The type of the id
+	 * @param id The id
+	 * @param name The name
+	 * @param lastName The last name
+	 * @param phoneNumber The phone number
+	 * @param address The address
+	 * @return True if the client was registered successfully. False if it was not.
+	 */
 	public boolean registerClient(int typeId, String id, String name, String lastName,String phoneNumber, String address) {
 		boolean registered = false; 
 		if(findClient(id)==null) {
@@ -67,6 +98,13 @@ public class RestaurantsAsociation {
 		return registered;
 	}
 	
+	/**
+	 * It registers an order
+	 * @param clientId The owner of the order
+	 * @param nit The NIT of the restaurant who offers the products
+	 * @param products The list of products
+	 * @return A message informing what happened
+	 */
 	public String registerOrder(String clientId, String nit, ArrayList<String[]> products) {
 		String message;
 		if(products.isEmpty()) {
@@ -83,6 +121,12 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It updates the data of a restaurant
+	 * @param nit The nit of the restaurant
+	 * @param option The option
+	 * @param data The data
+	 */
 	public void updateDataRestaurant(String nit, int option, String data) {
 		Restaurant restaurant=findRestaurant(nit);
 		switch(option) {
@@ -98,6 +142,12 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	/**
+	 * It updates the data of a product
+	 * @param id The id of the product
+	 * @param option The option
+	 * @param data The data
+	 */
 	public void updateDataProduct(String id, int option, String data) {
 		Product product=findProduct(id);
 		switch(option) {
@@ -120,6 +170,12 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	/**
+	 * It updates the data of a client
+	 * @param id The id of the client
+	 * @param option The option
+	 * @param data The data
+	 */
 	public void updateDataClient(String id, int option, String data) {
 		Client client=findClient(id);
 		switch(option) {
@@ -147,6 +203,12 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	/**
+	 * It updates the data of an order
+	 * @param id The id of the order
+	 * @param option The option
+	 * @param data The data
+	 */
 	public void updateDataOrder(String id, int option, String data) {
 		Order order=findOrder(id);
 		switch(option) {
@@ -162,28 +224,54 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	/**
+	 * It updates the list of products of an order
+	 * @param id The id of the order
+	 * @param products The list of porducts
+	 */
 	public void updateDataOrder(String id, ArrayList<String[]> products) {
 		Order order=findOrder(id);
 		order.setProducts(products);
 	}
-	
+
+	/**
+	 * It removes an order
+	 * @param id
+	 * @return
+	 */
 	public String removeOrder(String id) {
 		String message;
 		Order order=findOrder(id);
 		if(order==null) {
 			message="There is no order with the id "+id;
 		}else {
+			Client client = findClient(order.getClientId());
+			client.removeOrder(order.getId());
 			orders.remove(orders.indexOf(order));
+			
 			message="The order was removed successfully";
 		}
 		return message;
 	}
 	
+	/**
+	 * It updates the quantity of a product in an order
+	 * @param id The id of the product
+	 * @param position The position of the product
+	 * @param quantity The quantity
+	 */
 	public void updateQuantityProduct(String id, int position, String quantity) {
 		Order order=findOrder(id);
 		order.setQuantityProduct(position, quantity);
 	}
 	
+	/**
+	 * It exports all the orders in a file cvs
+	 * @param file The file
+	 * @param separator The separator
+	 * @return A message informing what happened
+	 * @throws FileNotFoundException If the file is not found
+	 */
 	public String exportOrders(File file, String separator) throws FileNotFoundException{
 		String message;
 			Collections.sort(orders);
@@ -197,6 +285,12 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It searches a client by his name
+	 * @param name The name
+	 * @param lastName The last name
+	 * @return If the client was found, so the client is returned. If it was not, so a message informing what happened is returned. In both cases the time spent in the search is returned
+	 */
 	public String searchClientByName(String name, String lastName){
 		String fullName = lastName+" "+name;
 		String message="There is no client with the name "+name+" "+lastName;
@@ -222,6 +316,12 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It imports the data of restaurants from a file cvs
+	 * @param file The file
+	 * @return A message informing what happened
+	 * @throws IOException If the file was not found
+	 */
 	public String[] importRestaurants(File file) throws IOException {
 		String[] message = new String[2];
 		String report="";
@@ -248,6 +348,12 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It imports the data of products from a file cvs
+	 * @param file The file
+	 * @return A message informing what happened
+	 * @throws IOException If the file was not found
+	 */
 	public String[] importProducts(File file) throws IOException{
 		String[] message = new String[2];
 		String report="";
@@ -274,6 +380,15 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It creates a new product
+	 * @param id The id
+	 * @param name The name
+	 * @param description The description of the product
+	 * @param price The price
+	 * @param nit The NIT that offers the product
+	 * @return True if the product was created. False if it was not
+	 */
 	public boolean importProduct(String id, String name, String description, String price, String nit) {
 		boolean registered=true;
 		if(findRestaurant(nit)==null) {
@@ -288,6 +403,12 @@ public class RestaurantsAsociation {
 		
 	}
 	
+	/**
+	 * It imports the data of orders from a file cvs
+	 * @param file The file
+	 * @return A message informing what happened
+	 * @throws IOException If the file was not found
+	 */
 	public String[] importOrders(File file) throws IOException {
 		String[] message = new String[2];
 		String report="";
@@ -331,6 +452,16 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It creates an order
+	 * @param id The id
+	 * @param date The date
+	 * @param status The status
+	 * @param clientId The id of the client, owner of the order
+	 * @param nit The NIT of the restaurant that offers this product
+	 * @param products The list of products
+	 * @return True if the order was registered. False if it was not
+	 */
 	public boolean importOrder(String id, Date date, int status, String clientId, String nit, ArrayList<String[]> products) {
 		boolean inserted=true;;
 		if(findRestaurant(nit)==null) {
@@ -352,6 +483,12 @@ public class RestaurantsAsociation {
 		return inserted;
 	}
 	
+	/**
+	 * It imports the data of clients from a file cvs
+	 * @param file The file
+	 * @return A message informing what happened
+	 * @throws IOException If the file was not found
+	 */
 	public String[] importClients(File file) throws IOException {
 		String[] message = new String[2];
 		String report="";
@@ -380,22 +517,24 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * @return The products
+	 */
 	public ArrayList<Product> getProducts() {
 		return products;
 	}
 
-	public void setProducts(ArrayList<Product> products) {
-		this.products = products;
-	}
-
+	/**
+	 * @return The orders
+	 */
 	public ArrayList<Order> getOrders() {
 		return orders;
 	}
 
-	public void setOrders(ArrayList<Order> orders) {
-		this.orders = orders;
-	}
-
+	/**
+	 * It returns the restaurants ordered by the name ascending
+	 * @return The restaurants
+	 */
 	public String showRestaurants() {
 		String message="";
 		Collections.sort(restaurants);
@@ -407,6 +546,10 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It returns the clients ordered by the phone number descending
+	 * @return The clients
+	 */
 	public String showClients() {
 		String message="";
 		PhoneNumberComparator pnc = new PhoneNumberComparator();
@@ -420,6 +563,11 @@ public class RestaurantsAsociation {
 		return message;
 	}
 	
+	/**
+	 * It looks for a restaurant
+	 * @param nit The NIT of the restaurant
+	 * @return If it finds the restaurant, so return the restaurant. If it does not, so return null
+	 */
 	public Restaurant findRestaurant(String nit) {
 		Restaurant restaurant=null;
 		boolean found=false;
@@ -432,6 +580,11 @@ public class RestaurantsAsociation {
 		return restaurant;
 	}
 	
+	/**
+	 * It looks for a product
+	 * @param id The id of the product
+	 * @return If it finds the product, so return the product. If it does not, so return null
+	 */
 	public Product findProduct(String id) {
 		Product product=null;
 		boolean found=false;
@@ -444,6 +597,11 @@ public class RestaurantsAsociation {
 		return product;
 	}
 	
+	/**
+	 * It looks for a client
+	 * @param id The id of the client
+	 * @return If it finds the client, so return the client. If it does not, so return null
+	 */
 	public Client findClient(String id) {
 		Client client=null;
 		boolean found=false;
@@ -456,6 +614,11 @@ public class RestaurantsAsociation {
 		return client;
 	}
 	
+	/**
+	 * It looks for an order
+	 * @param id The id of the order
+	 * @return If it finds the order, so return the order. If it does not, so return null
+	 */
 	public Order findOrder(String id) {
 		Order order=null;
 		boolean found=false;
@@ -468,6 +631,15 @@ public class RestaurantsAsociation {
 		return order;
 	}
 	
+	/**
+	 * It adds a client in the correct position
+	 * @param typeId The type of id
+	 * @param id The id
+	 * @param name The name
+	 * @param lastName The last name
+	 * @param phoneNumber The pohone number
+	 * @param address The addres
+	 */
 	public void addClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
 		Client client = new Client(typeId, id, name, lastName,phoneNumber, address);
 		if(clients.isEmpty()) {
@@ -487,6 +659,12 @@ public class RestaurantsAsociation {
 		
 	}
 	
+	/**
+	 * It checks that all the prodcuts of an order belong to the same restaurant
+	 * @param nit The NIT of the restaurant
+	 * @param products The list of products
+	 * @return True if all the products belong to the same restaurant. False if they do not
+	 */
 	public boolean checkProducts(String nit, ArrayList<String[]> products) {
 		boolean allProductsBelong=true;;
 		for(String[] product : products) {
@@ -497,6 +675,12 @@ public class RestaurantsAsociation {
 		return allProductsBelong;
 	}
 	
+	/**
+	 * It saves the data of the restaurants, clients, products and order in serializable files
+	 * @param typeObject The type of object: restaurant, client, product, order
+	 * @throws FileNotFoundException If the file was not found
+	 * @throws IOException If there was a problem creating the file
+	 */
 	public void saveData(String typeObject) throws FileNotFoundException, IOException{
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DATA_PATH_FILE+typeObject+".mor"));
 		switch(typeObject) {
@@ -519,6 +703,11 @@ public class RestaurantsAsociation {
 		oos.close();
 	}
 	
+	/**
+	 * It loads data of restaurants, clients, products and orders from serializable files
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadData() throws IOException, ClassNotFoundException{
 		File fileRestaurant = new File(DATA_PATH_FILE+"restaurant.mor");
@@ -548,6 +737,9 @@ public class RestaurantsAsociation {
 		
 	}
 	
+	/**
+	 * It sorts the list of restaurants by the NIT
+	 */
 	public void sortRestaurantByNit() {
 		//Bubble sort
 		for(int i=0; i<restaurants.size()-i; i++) {
@@ -563,6 +755,9 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	/**
+	 * It sorts the list of products by the id
+	 */
 	public void sortProductsById() {
 		//Insertion sort
 		for(int i=1; i<products.size(); i++) {
@@ -575,16 +770,17 @@ public class RestaurantsAsociation {
 		}
 	}
 	
+	/**
+	 * @return The list of restaurants
+	 */
 	public ArrayList<Restaurant> getRestaurants() {
 		return restaurants;
 	}
 
+	/**
+	 * @return The list of clients
+	 */
 	public ArrayList<Client> getClients() {
 		return clients;
 	}
-
-
-
-
-	
-	}
+}
