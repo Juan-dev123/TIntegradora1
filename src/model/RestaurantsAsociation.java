@@ -58,18 +58,13 @@ public class RestaurantsAsociation {
 		products.add(product);
 	}
 	
-	public String registerClient(int typeId, String id, String name, String lastName,String phoneNumber, String address) {
-		String message;
+	public boolean registerClient(int typeId, String id, String name, String lastName,String phoneNumber, String address) {
+		boolean registered = false; 
 		if(findClient(id)==null) {
 			addClient(typeId, id, name, lastName,phoneNumber, address);
-			message="The client was added successfully";
-			for(Client client:clients) {
-				message+="\n"+client.getLastName()+" "+client.getName();
-			}
-		}else {
-			message="The client was not added. There is already a client with the id: "+id;
+			registered = true;
 		}
-		return message;
+		return registered;
 	}
 	
 	public String registerOrder(String clientId, String nit, ArrayList<String[]> products) {
@@ -246,7 +241,7 @@ public class RestaurantsAsociation {
 			message[0]="All the restaurants were imported successfully";
 			message[1]=report;
 		}else {
-			message[0]="Some restaurants were not imported because the NIT";
+			message[0]="Some restaurants were not imported because they are already registered";
 			message[1]=report;
 		}
 		br.close();
@@ -272,7 +267,7 @@ public class RestaurantsAsociation {
 			message[0]="All the products were imported successfully";
 			message[1]=report;
 		}else {
-			message[0]="Some products were not imported because the id or the NIT";
+			message[0]="Some products were not imported because one or more of these reasons:\n1. The product was already registered \n2.There is no restaurant with the NIT that has the product";
 			message[1]=report;
 		}
 		br.close();
@@ -329,7 +324,7 @@ public class RestaurantsAsociation {
 			message[0]="All the orders were imported successfully";
 			message[1]=report;
 		}else {
-			message[0]="Some orders were not imported";
+			message[0]="Some orders were not imported beacuse one or more of these reasons: \n1. The order was already registered \n2. There is no restaurant with the NIT that has the order \n3. The product list is empty \n4. All the products do not belong to the same restaurant \n5. There is a product in the list that it is not registered \n6. The client, owner of the order, do not exist";
 			message[1]=report;
 		}
 		br.close();
@@ -355,6 +350,34 @@ public class RestaurantsAsociation {
 			client.addOrder(order);	
 		}
 		return inserted;
+	}
+	
+	public String[] importClients(File file) throws IOException {
+		String[] message = new String[2];
+		String report="";
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		br.readLine();
+		String line = br.readLine();
+		
+		int i=0;
+		while(line!=null) {
+			String[] dataClient=line.split(";");
+			int typeId = Integer.parseInt(dataClient[0])-1;
+			if(!registerClient(typeId,dataClient[1],dataClient[2],dataClient[3],dataClient[4],dataClient[5])) {
+				i++;
+				report+=i+(new Client(typeId,dataClient[1],dataClient[2],dataClient[3],dataClient[4],dataClient[5]).toString())+"\n";
+			}
+			line=br.readLine();
+		}
+		if(i==0) {
+			message[0]="All the clients were imported successfully";
+			message[1]=report;
+		}else {
+			message[0]="Some clients were not imported because they was already registered";
+			message[1]=report;
+		}
+		br.close();
+		return message;
 	}
 	
 	public ArrayList<Product> getProducts() {
@@ -387,13 +410,13 @@ public class RestaurantsAsociation {
 	public String showClients() {
 		String message="";
 		PhoneNumberComparator pnc = new PhoneNumberComparator();
-		Collections.sort(clients, pnc);
+		ArrayList<Client> clientsOrdererByPhone = new ArrayList<Client>(clients);
+		Collections.sort(clientsOrdererByPhone, pnc);
 		int i=0;
-		for(Client client:clients) {
+		for(Client client:clientsOrdererByPhone) {
 			i++;
 			message+=i+" "+client.toString()+"\n";
 		}
-		Collections.sort(clients);
 		return message;
 	}
 	
@@ -525,6 +548,33 @@ public class RestaurantsAsociation {
 		
 	}
 	
+	public void sortRestaurantByNit() {
+		//Bubble sort
+		for(int i=0; i<restaurants.size()-i; i++) {
+			for(int j=0; j<restaurants.size()-1-i; j++) {
+				String nit1 = restaurants.get(j).getNit();
+				String nit2 = restaurants.get(j+1).getNit();
+				if(nit1.compareTo(nit2)>0) {
+					String temp = nit2;
+					nit2 = nit1;
+					nit1 = temp;
+				}
+			}
+		}
+	}
+	
+	public void sortProductsById() {
+		//Insertion sort
+		for(int i=1; i<products.size(); i++) {
+			
+			for(int j=i; j<0 && products.get(j-1).getId().compareTo(products.get(j).getId())>0; j--) {
+				String temp = products.get(j).getId();
+				products.get(j).setNit(products.get(j-1).getId());
+				products.get(j-1).setNit(temp);
+			}
+		}
+	}
+	
 	public ArrayList<Restaurant> getRestaurants() {
 		return restaurants;
 	}
@@ -537,49 +587,4 @@ public class RestaurantsAsociation {
 
 
 	
-	/**
-	public void addClient(int typeId, String id, String name, String lastName, String phoneNumber, String address) {
-		if(clients.size()==0) {
-			clients.add(new Client(typeId, id, name, lastName, phoneNumber, address));
-		}else {
-			Client temp1;
-			Client temp2;
-			boolean inserted=false;
-			for(int i=0; i<clients.size() && !inserted; i++) {
-				if(clients.get(i).getLastName().compareToIgnoreCase(lastName)==0) {
-					if(clients.get(i).getName().compareToIgnoreCase(name)<=0) {
-						temp1=clients.get(i);
-						clients.set(i, new Client(typeId, id, name, lastName, phoneNumber, address));
-						inserted=true;
-						for(int j=i; j<clients.size()-1; j++) {
-							temp2=clients.get(j+1);
-							clients.set(j+1, temp1);
-							temp1=temp2;
-						}
-						clients.add(temp1);
-					}
-					
-				}else if(clients.get(i).getLastName().compareToIgnoreCase(lastName)<0) {
-					temp1=clients.get(i);
-					clients.set(i, new Client(typeId, id, name, lastName, phoneNumber, address));
-					inserted=true;
-					for(int j=i; j<clients.size()-1; j++) {
-						temp2=clients.get(j+1);
-						clients.set(j+1, temp1);
-						temp1=temp2;
-					}
-					clients.add(temp1);
-				}
-			}
-		}
-	} **/
-	/**
-	public String showProducts(String nit) {
-		Restaurant restaurant=findRestaurant(nit);
-		String products="";
-		for(int i=0; i<restaurant.getProducts().size();i++) {
-			products+=(i+1)+restaurant.getProducts().get(i).toString();
-		}
-		
-	} **/
-}
+	}

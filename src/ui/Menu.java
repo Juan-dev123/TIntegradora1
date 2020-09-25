@@ -52,9 +52,10 @@ public class Menu {
 			System.out.println("11 Show clients in order of their descending phone number");
 			System.out.println("12 Search for a client by his name efficiently");
 			System.out.println("13 Import data of restaurants from a file cvs");
-			System.out.println("14 ");
+			System.out.println("14 Import data of clients from a file cvs");
 			System.out.println("15 Import data of products from a file cvs");
 			System.out.println("16 Import data of orders from a file cvs");
+			System.out.println("17 Exit");
 			
 			
 			int option=Integer.parseInt(read.nextLine());
@@ -98,13 +99,16 @@ public class Menu {
 			case 13:
 				importRestaurants();
 				break;
+			case 14:
+				importClients();
+				break;
 			case 15:
 				importProducts();
 				break;
 			case 16:
 				importOrders();
 				break;
-			case -1:
+			case 17:
 				stop=true;
 				break;
 			}
@@ -190,13 +194,18 @@ public class Menu {
 		String phoneNumber=read.nextLine();
 		System.out.print("Enter the address:");
 		String address=read.nextLine();
-		System.out.println(consortium.registerClient(typeId, id, name, lastName,phoneNumber, address));	
-		try {
-			consortium.saveData("client");
-		}catch(FileNotFoundException fnf) {
-			System.out.println(fnf.getMessage());
-		}catch(IOException io) {
-			System.out.println(io.getMessage());
+		boolean registered=consortium.registerClient(typeId, id, name, lastName,phoneNumber, address);
+		if(registered) {
+			System.out.println("The client was added successfully");
+			try {
+				consortium.saveData("client");
+			}catch(FileNotFoundException fnf) {
+				System.out.println(fnf.getMessage());
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
+		}else {
+			System.out.println("The client was not added. There is already a client with the id: "+id);	
 		}
 	}
 	
@@ -693,6 +702,33 @@ public class Menu {
 					}
 				}
 				consortium.saveData("order");
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
+		}
+	}
+	
+	public void importClients() {
+		System.out.print("Enter the name of the file without \".cvs\": ");
+		String fileName=read.nextLine();
+		File file = new File(RestaurantsAsociation.DATA_PATH_FILE+fileName+".cvs");
+		if(!file.exists()) {
+			System.out.println("There is no file with the name "+fileName);
+		}else {
+			try {
+				String[] message=consortium.importClients(file);
+				System.out.println(message[0]);
+				char answer;
+				if(message[1]!="") {
+					do {
+						System.out.println("Do you want to see the clients that were not imported? Y/N");
+						answer=read.nextLine().toUpperCase().charAt(0);
+					}while(answer!='Y' && answer!='N');
+					if(answer=='Y') {
+						System.out.print(message[1]);
+					}
+				}
+				consortium.saveData("client");
 			}catch(IOException io) {
 				System.out.println(io.getMessage());
 			}
