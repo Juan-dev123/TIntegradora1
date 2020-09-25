@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Client implements Comparable<Client>, Serializable{
 
@@ -19,7 +20,7 @@ public class Client implements Comparable<Client>, Serializable{
 	private String phoneNumber;
 	private String address;
 	
-	private Order order;
+	private ArrayList<Order> orders;
 	private Card typeId;
 	
 	/**
@@ -38,6 +39,7 @@ public class Client implements Comparable<Client>, Serializable{
 		this.lastName = lastName.toUpperCase();
 		this.phoneNumber = phoneNumber;
 		this.address = address;
+		orders = new ArrayList<Order>();
 	}
 	
 	/**
@@ -86,12 +88,12 @@ public class Client implements Comparable<Client>, Serializable{
 		return message;
 	}
 
-	public Order getOrder() {
-		return order;
+	public ArrayList<Order> getOrder() {
+		return orders;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void addOrder(Order order) {
+		orders.add(order);
 	}
 
 	@Override

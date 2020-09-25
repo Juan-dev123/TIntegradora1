@@ -54,6 +54,7 @@ public class Menu {
 			System.out.println("13 Import data of restaurants from a file cvs");
 			System.out.println("14 ");
 			System.out.println("15 Import data of products from a file cvs");
+			System.out.println("16 Import data of orders from a file cvs");
 			
 			
 			int option=Integer.parseInt(read.nextLine());
@@ -99,6 +100,9 @@ public class Menu {
 				break;
 			case 15:
 				importProducts();
+				break;
+			case 16:
+				importOrders();
 				break;
 			case -1:
 				stop=true;
@@ -661,7 +665,33 @@ public class Menu {
 			}catch(IOException io) {
 				System.out.println(io.getMessage());
 			}
-			
+		}
+	}
+	
+	public void importOrders() {
+		System.out.print("Enter the name of the file without \".cvs\": ");
+		String fileName=read.nextLine();
+		File file = new File(RestaurantsAsociation.DATA_PATH_FILE+fileName+".cvs");
+		if(!file.exists()) {
+			System.out.println("There is no file with the name "+fileName);
+		}else {
+			try {
+				String[] message=consortium.importOrders(file);
+				System.out.println(message[0]);
+				char answer;
+				if(message[1]!="") {
+					do {
+						System.out.println("Do you want to see the products that were not imported Y/N");
+						answer=read.nextLine().toUpperCase().charAt(0);
+					}while(answer!='Y' && answer!='N');
+					if(answer=='Y') {
+						System.out.print(message[1]);
+					}
+				}
+				consortium.saveData("order");
+			}catch(IOException io) {
+				System.out.println(io.getMessage());
+			}
 		}
 	}
 }

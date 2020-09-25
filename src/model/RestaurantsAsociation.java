@@ -11,7 +11,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 import exceptions.DuplicateProductException;
 import exceptions.NotFoundRestaurantException;
@@ -79,7 +81,7 @@ public class RestaurantsAsociation {
 			Client client = findClient(clientId);
 			Order order=new Order(clientId, nit, products);
 			orders.add(order);
-			client.setOrder(order);
+			client.addOrder(order);
 			message="The order was registered successfully";
 		}
 		return message;
@@ -288,6 +290,66 @@ public class RestaurantsAsociation {
 		}
 		return registered;
 		
+	}
+	
+	public String[] importOrders(File file) throws IOException {
+		String[] message = new String[2];
+		String report="";
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		br.readLine();
+		String line = br.readLine();
+		int i=0;
+		while(line!=null) {
+			String[] dataOrder=line.split(";");
+			String[] d = dataOrder[1].split("/");
+			int month = Integer.parseInt(d[0])-1;
+			int day = Integer.parseInt(d[1]);
+			int year = Integer.parseInt(d[2])-1900;
+			Calendar cal = Calendar.getInstance();
+			cal.set(year, month, day);
+			Date date = cal.getTime();
+			ArrayList<String[]> products=new ArrayList<String[]>();
+			for(int j=2; j<dataOrder.length-2; j+=2) {
+				String[] product=new String[2];
+				for(int k=0; k<2; k++) {
+					product[k]=dataOrder[j];
+				}
+				products.add(product);
+			}
+			if(!importOrder(dataOrder[0], date, dataOrder[2], dataOrder[3], products)) {
+				i++;
+				report+=i+(new Order(dataOrder[0],dataOrder[1], products).toString())+"\n";
+			}
+			line=br.readLine();
+		}
+		if(i==0) {
+			message[0]="All the restaurants were imported successfully";
+			message[1]=report;
+		}else {
+			message[0]="Some restaurants were not imported";
+			message[1]=report;
+		}
+		br.close();
+		return message;
+	}
+	
+	public boolean importOrder(String id, Date date, String clientId, String nit, ArrayList<String[]> products) {
+		boolean inserted=true;;
+		if(findRestaurant(nit)==null) {
+			inserted=false;
+		}else if(products.isEmpty()) {
+			inserted=false;
+		}else if(checkProducts(nit, products)) {
+			inserted=false;
+		}else if(findClient(clientId)==null){
+			inserted=false;
+		}else {
+			Client client = findClient(clientId);
+			Order order=new Order(id, date, clientId, nit, products);
+			orders.add(order);
+			client.addOrder(order);	
+		}
+		return inserted;
 	}
 	
 	public ArrayList<Product> getProducts() {

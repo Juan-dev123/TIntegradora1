@@ -42,6 +42,14 @@ public class Order implements Serializable, Comparable<Order>{
 		state = Status.REQUESTED;
 	}
 	
+	public Order(String id, Date date, String clientId, String nit, ArrayList<String[]> products) {
+		this.id=id;
+		this.date=date;
+		this.clientId = clientId;
+		this.nit = nit;
+		this.products = products;
+	}
+	
 	/**
 	 * It creates a random id
 	 * @return The id
