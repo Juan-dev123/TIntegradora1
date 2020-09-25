@@ -27,6 +27,7 @@ public class RestaurantsAsociation {
 	private ArrayList<Product> products;
 	private ArrayList<Order> orders;
 	
+	
 	public RestaurantsAsociation() throws IOException, ClassNotFoundException{
 		restaurants = new ArrayList<Restaurant>();
 		clients = new ArrayList<Client>();
@@ -298,42 +299,44 @@ public class RestaurantsAsociation {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		br.readLine();
 		String line = br.readLine();
-		int i=0;
+		boolean error=false;
 		while(line!=null) {
 			String[] dataOrder=line.split(";");
 			String[] d = dataOrder[1].split("/");
 			int month = Integer.parseInt(d[0])-1;
 			int day = Integer.parseInt(d[1]);
-			int year = Integer.parseInt(d[2])-1900;
+			int year = Integer.parseInt(d[2]);
 			Calendar cal = Calendar.getInstance();
 			cal.set(year, month, day);
 			Date date = cal.getTime();
+			int state=Integer.valueOf(dataOrder[2]);
 			ArrayList<String[]> products=new ArrayList<String[]>();
-			for(int j=2; j<dataOrder.length-2; j+=2) {
-				String[] product=new String[2];
-				for(int k=0; k<2; k++) {
-					product[k]=dataOrder[j];
+			if(dataOrder.length>=6) {
+				for(int j=5; j<dataOrder.length-2; j+=2) {
+					String[] product = new String[2];
+					product[0]=dataOrder[j];
+					product[1]=dataOrder[j+1];
+					products.add(product);
 				}
-				products.add(product);
 			}
-			if(!importOrder(dataOrder[0], date, dataOrder[2], dataOrder[3], products)) {
-				i++;
-				report+=i+(new Order(dataOrder[0],dataOrder[1], products).toString())+"\n";
+			if(!importOrder(dataOrder[0], date, state, dataOrder[3], dataOrder[4], products)) {
+				error=true;
+				report+=(new Order(dataOrder[0], date, state, dataOrder[3], dataOrder[4], products).toString())+"\n";
 			}
 			line=br.readLine();
 		}
-		if(i==0) {
-			message[0]="All the restaurants were imported successfully";
+		if(!error) {
+			message[0]="All the orders were imported successfully";
 			message[1]=report;
 		}else {
-			message[0]="Some restaurants were not imported";
+			message[0]="Some orders were not imported";
 			message[1]=report;
 		}
 		br.close();
 		return message;
 	}
 	
-	public boolean importOrder(String id, Date date, String clientId, String nit, ArrayList<String[]> products) {
+	public boolean importOrder(String id, Date date, int status, String clientId, String nit, ArrayList<String[]> products) {
 		boolean inserted=true;;
 		if(findRestaurant(nit)==null) {
 			inserted=false;
@@ -343,9 +346,11 @@ public class RestaurantsAsociation {
 			inserted=false;
 		}else if(findClient(clientId)==null){
 			inserted=false;
+		}else if(findOrder(id)!=null){
+			inserted=false;
 		}else {
 			Client client = findClient(clientId);
-			Order order=new Order(id, date, clientId, nit, products);
+			Order order=new Order(id, date, status,clientId, nit, products);
 			orders.add(order);
 			client.addOrder(order);	
 		}
@@ -483,6 +488,9 @@ public class RestaurantsAsociation {
 			break;
 		case "order":
 			oos.writeObject(orders);
+			ObjectOutputStream oos1 = new ObjectOutputStream(new FileOutputStream(DATA_PATH_FILE+"client"+".mor"));
+			oos1.writeObject(clients);
+			oos1.close();
 			break;
 		}
 		oos.close();

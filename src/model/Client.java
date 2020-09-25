@@ -84,7 +84,17 @@ public class Client implements Comparable<Client>, Serializable{
 	 * @return The string
 	 */
 	public String toString() {
-		String message="Name: "+name+"\nLast name: "+lastName+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address;
+		String listOrders="\nOrders:";
+		if(orders.isEmpty()) {
+			listOrders+=" 0";
+		}else{
+			for(int i=0; i<orders.size(); i++) {
+				if(!orders.get(i).getState().equals("DELIVERED")) {
+					listOrders+="\n"+orders.get(i).toString()+"\n";
+				}
+			}
+		}
+		String message="Name: "+name+"\nLast name: "+lastName+"\nType of Id: "+typeId+"\nNumber of identification: "+id+"\nPhone Number: "+phoneNumber+"\nAddress:"+address+listOrders;
 		return message;
 	}
 

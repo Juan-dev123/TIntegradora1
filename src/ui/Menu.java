@@ -125,7 +125,7 @@ public class Menu {
 		if(consortium.registerRestaurant(name, nit, nameAdmin)){
 			System.out.println("The restaurant was registered successfully");
 		}else {
-			System.out.println("The restaurant was not registered.\\nThere is already a restaurant registered with the NIT: "+nit);
+			System.out.println("The restaurant was not registered.\nThere is already a restaurant registered with the NIT: "+nit);
 		}
 		try {
 			consortium.saveData("restaurant");
@@ -521,23 +521,27 @@ public class Menu {
 		String idProduct;
 		do {
 			System.out.println("When you want to stop enter -1");
-			System.out.println("Enter the id of the product");
+			System.out.print("Enter the id of the product: ");
 			idProduct=read.nextLine();
-			if(consortium.findProduct(idProduct)==null || !idProduct.equals("-1")) {
+			if(consortium.findProduct(idProduct)==null && !idProduct.equals("-1")) {
 				System.out.println("The product with the id "+idProduct+" does not exist");
 			}else if(!idProduct.equals("-1")){
-				System.out.print("Enter que quantity: ");
-				int quantity=Integer.parseInt(read.nextLine());
+				int quantity;
+				do {
+					System.out.print("Enter que quantity: ");
+					quantity=Integer.parseInt(read.nextLine());
+				}while(quantity<1);
+				
 				boolean found=false;
 				for(int i=0; i<products.size(); i++) {
-					if(products.get(i)[0].equals(consortium.findProduct(idProduct).getId())) {
+					if(products.get(i)[0].equals(idProduct)) {
 						quantity+=Integer.parseInt(products.get(i)[1]);
 						products.get(i)[1]=String.valueOf(quantity);
 						found=true;
 					}
 				}
 				if(!found) {
-					String[] order = {consortium.findProduct(idProduct).getId(), String.valueOf(quantity)};
+					String[] order = {idProduct, String.valueOf(quantity)};
 					products.add(order);
 				}
 			}
@@ -681,7 +685,7 @@ public class Menu {
 				char answer;
 				if(message[1]!="") {
 					do {
-						System.out.println("Do you want to see the products that were not imported Y/N");
+						System.out.println("Do you want to see the orders that were not imported? Y/N");
 						answer=read.nextLine().toUpperCase().charAt(0);
 					}while(answer!='Y' && answer!='N');
 					if(answer=='Y') {

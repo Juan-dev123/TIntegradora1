@@ -42,12 +42,14 @@ public class Order implements Serializable, Comparable<Order>{
 		state = Status.REQUESTED;
 	}
 	
-	public Order(String id, Date date, String clientId, String nit, ArrayList<String[]> products) {
+	public Order(String id, Date date, int state, String clientId, String nit, ArrayList<String[]> products) {
 		this.id=id;
 		this.date=date;
 		this.clientId = clientId;
 		this.nit = nit;
 		this.products = products;
+		this.state = Status.values()[state];
+		
 	}
 	
 	/**
@@ -66,9 +68,9 @@ public class Order implements Serializable, Comparable<Order>{
 	@Override
 	public int compareTo(Order order) {
 		int comp;
-		int nit1 = Integer.parseInt(getNit());
-		int nit2 = Integer.parseInt(order.getNit());
-		comp=nit1-nit2;
+		String nit1 = getNit();
+		String nit2 = order.getNit();
+		comp=nit1.compareTo(nit2);
 		if(comp==0) {
 			comp=organizeByClientId(order);
 		}
@@ -77,9 +79,9 @@ public class Order implements Serializable, Comparable<Order>{
 	
 	public int organizeByClientId(Order order) {
 		int comp;
-		int clientId1 = Integer.parseInt(getClientId());
-		int clientId2 = Integer.parseInt(order.getClientId());
-		comp=clientId2-clientId1;
+		String clientId1 = getClientId();
+		String clientId2 = order.getClientId();
+		comp=clientId2.compareTo(clientId1);
 		if(comp==0) {
 			comp=organizeByDate(order);
 		}
@@ -96,6 +98,17 @@ public class Order implements Serializable, Comparable<Order>{
 	
 	public int organizeById(Order order) {
 		return getId().compareTo(order.getId());
+	}
+	
+	@Override
+	public String toString() {
+		String listProducts="\nList of products:\n";
+		for(int i=0; i<products.size(); i++) {
+			listProducts+="Code of product:"+products.get(i)[0]+"\n";
+			listProducts+="Quantity:"+products.get(i)[1];
+		}
+		String message="Order id: "+id+"\nStatus: "+state.toString()+"\nDate: "+date.toString()+"\nNit of restaurant who offers these products: "+nit+listProducts;
+		return message;
 	}
 
 	public String getId() {
